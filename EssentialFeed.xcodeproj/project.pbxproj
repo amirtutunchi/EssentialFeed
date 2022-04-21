@@ -11,6 +11,8 @@
 		8DF078912811F28C00C271C4 /* EssentialFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DF078862811F28B00C271C4 /* EssentialFeed.framework */; };
 		8DF078962811F28C00C271C4 /* EssentialFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF078952811F28C00C271C4 /* EssentialFeedTests.swift */; };
 		8DF078972811F28C00C271C4 /* EssentialFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = 8DF078892811F28B00C271C4 /* EssentialFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8DF078A12811F2D900C271C4 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF078A02811F2D900C271C4 /* FeedItem.swift */; };
+		8DF078A32811F37100C271C4 /* FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF078A22811F37100C271C4 /* FeedLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +31,8 @@
 		8DF0788A2811F28B00C271C4 /* EssentialFeed.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = EssentialFeed.docc; sourceTree = "<group>"; };
 		8DF078902811F28C00C271C4 /* EssentialFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EssentialFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DF078952811F28C00C271C4 /* EssentialFeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssentialFeedTests.swift; sourceTree = "<group>"; };
+		8DF078A02811F2D900C271C4 /* FeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
+		8DF078A22811F37100C271C4 /* FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 			children = (
 				8DF078892811F28B00C271C4 /* EssentialFeed.h */,
 				8DF0788A2811F28B00C271C4 /* EssentialFeed.docc */,
+				8DF078A02811F2D900C271C4 /* FeedItem.swift */,
+				8DF078A22811F37100C271C4 /* FeedLoader.swift */,
 			);
 			path = EssentialFeed;
 			sourceTree = "<group>";
@@ -194,6 +200,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8DF078A32811F37100C271C4 /* FeedLoader.swift in Sources */,
+				8DF078A12811F2D900C271C4 /* FeedItem.swift in Sources */,
 				8DF0788B2811F28B00C271C4 /* EssentialFeed.docc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -395,6 +403,7 @@
 		8DF0789E2811F28C00C271C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -409,6 +418,7 @@
 		8DF0789F2811F28C00C271C4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
