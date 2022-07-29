@@ -59,34 +59,25 @@ class RemoteFeedLoaderTest: XCTestCase {
     
     func test_load_deliversItemsOn200HTTPResponse() {
         let (sut, client) = makeSUT()
-        let feedItem1 = FeedItem(
+        let feedItem1 = makeFeedItem(
             id: UUID(),
             description: "a description",
             location: "a lcoation",
             imageURL: URL(string: "https://a-given-url.com")!
         )
         
-        let jsonFeedItem1 = [
-            "id": feedItem1.id.uuidString,
-            "description": feedItem1.description,
-            "location": feedItem1.location,
-            "image": feedItem1.imageURL.absoluteString
-        ]
-        let feedItem2 = FeedItem(
+        let feedItem2 = makeFeedItem(
             id: UUID(),
             description: nil,
             location: nil,
             imageURL: URL(string: "https://a-given-url.com")!
         )
-        
-        let jsonFeedItem2 = [
-            "id": feedItem2.id.uuidString,
-            "image": feedItem2.imageURL.absoluteString
-        ]
-        
-        let jsonItem = ["items": [jsonFeedItem1, jsonFeedItem2]]
-        expect(feedLoader: sut, toCompleteWithResult: .success([feedItem1, feedItem2])) {
-            let json = try! JSONSerialization.data(withJSONObject: jsonItem)
+    
+        expect(
+            feedLoader: sut,
+            toCompleteWithResult: .success([feedItem1.model, feedItem2.model])
+        ) {
+            let json = makeItemJSON([feedItem1.json, feedItem2.json])
             client.complete(withStatusCode: 200, data: json)
         }
     }
@@ -114,6 +105,33 @@ extension RemoteFeedLoaderTest {
         }
         action()
         XCTAssertEqual(capturedErrors, result,file: file, line: line)
+    }
+    
+    private func makeFeedItem(id: UUID, description: String?, location: String?, imageURL: URL) -> (model: FeedItem, json: [String: Any]) {
+        let feedItem1 = FeedItem(
+            id: id,
+            description: description,
+            location: location,
+            imageURL: imageURL
+        )
+        
+        let jsonFeedItem1 = [
+            "id": feedItem1.id.uuidString,
+            "description": feedItem1.description,
+            "location": feedItem1.location,
+            "image": feedItem1.imageURL.absoluteString
+        ].reduce(into: [String: Any]()) { (acc, e) in
+            if let value = e.value {
+                acc[e.key] = value
+            }
+        }
+        
+        return (feedItem1, jsonFeedItem1)
+    }
+    
+    private func makeItemJSON(_ items: [[String: Any]]) -> Data {
+        let json = ["items": items]
+        return try! JSONSerialization.data(withJSONObject: json)
     }
     
     // MARK: - Spy
