@@ -64,12 +64,12 @@ extension RemoteFeedLoaderTest {
         toCompleteWithError error: RemoteFeedLoader.Error,
         when action: () -> Void
     ) {
-        var capturedErrors: RemoteFeedLoader.Error?
+        var capturedErrors: RemoteFeedLoader.Result?
         sut.load {
             capturedErrors = $0
         }
         action()
-        XCTAssertEqual(capturedErrors, error)
+        XCTAssertEqual(capturedErrors, .failure(error))
     }
     
     // MARK: - Spy
