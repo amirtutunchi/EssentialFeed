@@ -50,11 +50,44 @@ class RemoteFeedLoaderTest: XCTestCase {
     }
     
     func test_load_deliversEmptyJSONOn200HTTPResponse() {
-        // Given
         let (sut, client) = makeSUT()
         expect(feedLoader: sut, toCompleteWithResult: .success([])) {
             let emptyListJSON = Data("{\"items\": []}".utf8)
             client.complete(withStatusCode: 200, data: emptyListJSON)
+        }
+    }
+    
+    func test_load_deliversItemsOn200HTTPResponse() {
+        let (sut, client) = makeSUT()
+        let feedItem1 = FeedItem(
+            id: UUID(),
+            description: "a description",
+            location: "a lcoation",
+            imageURL: URL(string: "https://a-given-url.com")!
+        )
+        
+        let jsonFeedItem1 = [
+            "id": feedItem1.id.uuidString,
+            "description": feedItem1.description,
+            "location": feedItem1.location,
+            "image": feedItem1.imageURL.absoluteString
+        ]
+        let feedItem2 = FeedItem(
+            id: UUID(),
+            description: nil,
+            location: nil,
+            imageURL: URL(string: "https://a-given-url.com")!
+        )
+        
+        let jsonFeedItem2 = [
+            "id": feedItem2.id.uuidString,
+            "image": feedItem2.imageURL.absoluteString
+        ]
+        
+        let jsonItem = ["items": [jsonFeedItem1, jsonFeedItem2]]
+        expect(feedLoader: sut, toCompleteWithResult: .success([feedItem1, feedItem2])) {
+            let json = try! JSONSerialization.data(withJSONObject: jsonItem)
+            client.complete(withStatusCode: 200, data: json)
         }
     }
 }
@@ -71,14 +104,16 @@ extension RemoteFeedLoaderTest {
     private func expect(
         feedLoader sut: RemoteFeedLoader,
         toCompleteWithResult result: RemoteFeedLoader.Result,
-        when action: () -> Void
+        when action: () -> Void,
+        file: StaticString = #file,
+        line: UInt = #line
     ) {
         var capturedErrors: RemoteFeedLoader.Result?
         sut.load {
             capturedErrors = $0
         }
         action()
-        XCTAssertEqual(capturedErrors, result)
+        XCTAssertEqual(capturedErrors, result,file: file, line: line)
     }
     
     // MARK: - Spy
