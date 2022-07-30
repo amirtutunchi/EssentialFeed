@@ -82,17 +82,51 @@ class RemoteFeedLoaderTest: XCTestCase {
             client.complete(withStatusCode: 200, data: json)
         }
     }
+    
+    func test_load_doesNotDeliverResultAfterSUTInstanceDeallocated() {
+        // Given
+        var sut: RemoteFeedLoader?
+        let url = URL(string: "https://a-given-url.com")!
+        let client = HTTPClientSpy()
+        sut = RemoteFeedLoader(url: url, client: client)
+        
+        // When
+        var capturedResult = [RemoteFeedLoader.Result]()
+        sut?.load {
+            capturedResult.append($0)
+        }
+        sut = nil
+
+        // Then
+        client.complete(withStatusCode: 200, data: makeItemJSON([]))
+        XCTAssertTrue(capturedResult.isEmpty, "Should not deliver results after deallocation.")
+    }
 }
 
 // MARK: - Helpers
 extension RemoteFeedLoaderTest {
     
-    private func makeSUT(url: URL = URL(string: "https://a-given-url.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+    private func makeSUT(
+        url: URL = URL(string: "https://a-given-url.com")!,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
         let client = HTTPClientSpy()
         let sut = RemoteFeedLoader(url: url, client: client)
+        addTrackForMemoryLeak(object: sut, file: file, line: line)
+        addTrackForMemoryLeak(object: client,file: file, line: line )
         return (sut, client)
     }
     
+    private func addTrackForMemoryLeak(
+        object: AnyObject,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        addTeardownBlock { [weak object] in
+            XCTAssertNil(object, "object should be nil if not memory leak detected", file: file, line: line)
+        }
+    }
     private func expect(
         feedLoader sut: RemoteFeedLoader,
         toCompleteWithResult result: RemoteFeedLoader.Result,
@@ -100,12 +134,12 @@ extension RemoteFeedLoaderTest {
         file: StaticString = #file,
         line: UInt = #line
     ) {
-        var capturedErrors: RemoteFeedLoader.Result?
+        var capturedResult: RemoteFeedLoader.Result?
         sut.load {
-            capturedErrors = $0
+            capturedResult = $0
         }
         action()
-        XCTAssertEqual(capturedErrors, result,file: file, line: line)
+        XCTAssertEqual(capturedResult, result,file: file, line: line)
     }
     
     private func makeFeedItem(id: UUID, description: String?, location: String?, imageURL: URL) -> (model: FeedItem, json: [String: Any]) {
