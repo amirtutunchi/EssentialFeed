@@ -12,10 +12,9 @@ public final class RemoteFeedLoader {
         case connectivity
         case invalidData
     }
-    public enum Result: Equatable {
-        case success([FeedItem])
-        case failure(Error)
-    }
+    
+    public typealias Result = LoadFeedResult<Error>
+    
     public func load(completion: @escaping (Result) -> Void) {
         client.get(from: url) { [weak self] result in
             guard self != nil else { return }
