@@ -129,17 +129,25 @@ extension RemoteFeedLoaderTest {
     }
     private func expect(
         feedLoader sut: RemoteFeedLoader,
-        toCompleteWithResult result: RemoteFeedLoader.Result,
+        toCompleteWithResult expectedResult: RemoteFeedLoader.Result,
         when action: () -> Void,
         file: StaticString = #file,
         line: UInt = #line
     ) {
-        var capturedResult: RemoteFeedLoader.Result?
-        sut.load {
-            capturedResult = $0
+        let expectation = expectation(description: "Wait for the load")
+        sut.load { receivedResult in
+            switch(receivedResult, expectedResult) {
+            case let (.success(receivedItems), .success(expectedItem)):
+                XCTAssertEqual(receivedItems, expectedItem, file: file, line: line)
+            case let (.failure(receivedError), .failure(expectedError)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+            default:
+                XCTFail("expected\(expectedResult) got \(receivedResult) instead")
+            }
+            expectation.fulfill()
         }
         action()
-        XCTAssertEqual(capturedResult, result,file: file, line: line)
+        wait(for: [expectation], timeout: 1.0)
     }
     
     private func makeFeedItem(id: UUID, description: String?, location: String?, imageURL: URL) -> (model: FeedItem, json: [String: Any]) {
