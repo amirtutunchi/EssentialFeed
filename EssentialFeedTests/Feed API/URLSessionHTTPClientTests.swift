@@ -1,9 +1,17 @@
 import XCTest
 import EssentialFeed
 
+protocol HttpSession {
+    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> HttpSessionTask
+}
+
+protocol HttpSessionTask {
+    func resume()
+}
+
 private class URLSessionHTTPClient {
-    private let session: URLSession
-    init(session: URLSession) {
+    private let session: HttpSession
+    init(session: HttpSession) {
         self.session = session
     }
     
@@ -52,22 +60,22 @@ class URLSessionHTTPClientTests: XCTestCase {
            
             exp.fulfill()
         }
-        wait(for: [exp], timeout: 1.0)        
+        wait(for: [exp], timeout: 1.0)
     }
     // MARK: -Helpers
-    private class URLSessionSpy: URLSession {
+    private class URLSessionSpy: HttpSession {
         
         struct Stub {
-            let task: URLSessionDataTask
+            let task: HttpSessionTask
             let error: Error?
         }
         var stubs = [URL: Stub]()
         
-        func stubIn(url: URL, task: URLSessionDataTask = URLSessionDataTaskSpy(), error: Error? = nil) {
+        func stubIn(url: URL, task: HttpSessionTask = URLSessionDataTaskSpy(), error: Error? = nil) {
             let stub = Stub(task: task, error: error)
             stubs[url] = stub
         }
-        override func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+        func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> HttpSessionTask {
             guard let stub = stubs[url] else {
                 fatalError("Could not find stub")
             }
@@ -75,13 +83,13 @@ class URLSessionHTTPClientTests: XCTestCase {
             return stubs[url]?.task ?? URLSessionDataTaskSpy()
         }
     }
-    private class FakeSessionDataTask: URLSessionDataTask {
-        override func resume() { }
+    private class FakeSessionDataTask: HttpSessionTask {
+        func resume() { }
     }
     
-    private class URLSessionDataTaskSpy: URLSessionDataTask {
+    private class URLSessionDataTaskSpy: HttpSessionTask {
         var resumeCount = 0
-        override func resume() {
+        func resume() {
             resumeCount += 1
         }
     }
