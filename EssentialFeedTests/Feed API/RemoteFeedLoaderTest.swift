@@ -177,7 +177,7 @@ extension RemoteFeedLoaderTest {
         var requestedURLs: [URL] {
             messages.map { $0.url }
         }
-        func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void) {
+        func get(url: URL, completionHandler completion: @escaping (HTTPClientResult) -> Void) {
             messages.append((url, completion))
         }
         func complete(with error: Error, at index: Int = 0) {
