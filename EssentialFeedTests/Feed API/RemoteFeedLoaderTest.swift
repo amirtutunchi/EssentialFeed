@@ -117,16 +117,7 @@ extension RemoteFeedLoaderTest {
         addTrackForMemoryLeak(object: client,file: file, line: line )
         return (sut, client)
     }
-    
-    private func addTrackForMemoryLeak(
-        object: AnyObject,
-        file: StaticString = #file,
-        line: UInt = #line
-    ) {
-        addTeardownBlock { [weak object] in
-            XCTAssertNil(object, "object should be nil if not memory leak detected", file: file, line: line)
-        }
-    }
+
     private func expect(
         feedLoader sut: RemoteFeedLoader,
         toCompleteWithResult expectedResult: RemoteFeedLoader.Result,
