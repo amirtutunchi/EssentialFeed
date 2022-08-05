@@ -34,6 +34,7 @@ class CacheFeedUseCaseTests: XCTestCase {
 }
 
 //MARK: - Helpers
+#if DEBUG
 extension CacheFeedUseCaseTests {
     private func makeSUT() -> (LocalFeedLoader, FeedStore) {
         let store = FeedStore()
@@ -45,3 +46,4 @@ extension CacheFeedUseCaseTests {
         FeedItem(id: UUID(), description: "desc", location: "", imageURL: URL(string: "http://anyurl.com")!)
     }
 }
+#endif
