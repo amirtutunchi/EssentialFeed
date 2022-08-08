@@ -7,8 +7,9 @@ class LocalFeedLoader {
         self.store = store
         self.dateCreator = timeStamp
     }
-    func save(item: [FeedItem]) {
+    func save(item: [FeedItem], completion: @escaping (Error?) -> Void ) {
         store.deleteCachedFeed { [unowned self] error in
+            completion(error)
             if error == nil {
                 store.insertCache(items: item, timeStamp: dateCreator())
             }
@@ -50,14 +51,14 @@ class CacheFeedUseCaseTests: XCTestCase {
     func test_save_deleteCache() {
         let (sut, store) = makeSUT()
         let items = [UniqueItem(), UniqueItem()]
-        sut.save(item: items)
+        sut.save(item: items) { _ in }
         XCTAssertEqual(store.messages, [.delete])
     }
     
     func test_save_doesNotInsertCacheOnCacheDeletionError() {
         let (sut, store) = makeSUT()
         let items = [UniqueItem(), UniqueItem()]
-        sut.save(item: items)
+        sut.save(item: items) { _ in }
         let error = anyError()
         store.completeDeletion(with: error)
         XCTAssertEqual(store.messages, [.delete])
@@ -67,9 +68,25 @@ class CacheFeedUseCaseTests: XCTestCase {
         let timestamp = Date()
         let (sut, store) = makeSUT(timeStamp: { timestamp })
         let items = [UniqueItem(), UniqueItem()]
-        sut.save(item: items)
+        sut.save(item: items) { _ in }
         store.completeDeletionSuccessfully()
         XCTAssertEqual(store.messages, [.delete, .insert(items, timestamp)])
+    }
+    
+    func test_save_returnCorrectErrorOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let items = [UniqueItem(), UniqueItem()]
+        let error = anyError()
+        var receivedError: Error?
+        let exp = expectation(description: "Wait for completion to run...")
+        sut.save(item: items) { error in
+            receivedError = error
+            exp.fulfill()
+        }
+        store.completeDeletion(with: error)
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(receivedError as? NSError, error)
+        XCTAssertEqual(store.messages, [.delete])
     }
 }
 
