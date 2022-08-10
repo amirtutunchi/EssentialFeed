@@ -17,8 +17,7 @@ class CacheFeedUseCaseTests: XCTestCase {
     
     func test_save_doesNotInsertCacheOnCacheDeletionError() {
         let (sut, store) = makeSUT()
-        let items = [UniqueItem(), UniqueItem()]
-        sut.save(item: items) { _ in }
+        sut.save(item: UniqueItems().models) { _ in }
         let error = anyError()
         store.completeDeletion(with: error)
         XCTAssertEqual(store.messages, [.delete])
@@ -27,10 +26,10 @@ class CacheFeedUseCaseTests: XCTestCase {
     func test_save_increaseInsertionWithCorrectTimeStampOnSuccessfulCacheDeletion() {
         let timestamp = Date()
         let (sut, store) = makeSUT(timeStamp: { timestamp })
-        let items = [UniqueItem(), UniqueItem()]
-        sut.save(item: items) { _ in }
+        let items = UniqueItems()
+        sut.save(item: items.models) { _ in }
         store.completeDeletionSuccessfully()
-        XCTAssertEqual(store.messages, [.delete, .insert(items.toLocal(), timestamp)])
+        XCTAssertEqual(store.messages, [.delete, .insert(items.local, timestamp)])
     }
     
     func test_save_returnCorrectErrorOnDeletionError() {
@@ -62,7 +61,7 @@ class CacheFeedUseCaseTests: XCTestCase {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, timeStamp: Date.init)
         var receivedErrors = [LocalFeedLoader.FeedResult]()
-        sut?.save(item: [UniqueItem()]) { receivedErrors.append($0) }
+        sut?.save(item: UniqueItems().models) { receivedErrors.append($0) }
         
         sut = nil
         store.completeDeletion(with: anyError())
@@ -74,7 +73,7 @@ class CacheFeedUseCaseTests: XCTestCase {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, timeStamp: Date.init)
         var receivedErrors = [LocalFeedLoader.FeedResult]()
-        sut?.save(item: [UniqueItem()]) { receivedErrors.append($0) }
+        sut?.save(item: UniqueItems().models) { receivedErrors.append($0) }
         
         store.completeDeletionSuccessfully()
         sut = nil
@@ -109,6 +108,12 @@ extension CacheFeedUseCaseTests {
     
     private func UniqueItem() -> FeedItem {
         FeedItem(id: UUID(), description: "desc", location: "", imageURL: anyURL())
+    }
+    
+    private func UniqueItems() -> (models: [FeedItem], local : [LocalFeedItem]) {
+        let models = [FeedItem(id: UUID(), description: "desc", location: "", imageURL: anyURL())]
+        let locals = models.toLocal()
+        return (models, locals)
     }
     
     private func anyURL() -> URL {
