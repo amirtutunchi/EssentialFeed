@@ -1,4 +1,3 @@
-
 internal enum FeedItemMapper {
     private struct Root: Decodable {
         let items: [RemoteFeedItem]

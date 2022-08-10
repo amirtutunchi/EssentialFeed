@@ -106,12 +106,12 @@ extension CacheFeedUseCaseTests {
         return (sut, store)
     }
     
-    private func UniqueItem() -> FeedItem {
-        FeedItem(id: UUID(), description: "desc", location: "", imageURL: anyURL())
+    private func UniqueItem() -> FeedImage {
+        FeedImage(id: UUID(), description: "desc", location: "", url: anyURL())
     }
     
-    private func UniqueItems() -> (models: [FeedItem], local : [LocalFeedItem]) {
-        let models = [FeedItem(id: UUID(), description: "desc", location: "", imageURL: anyURL())]
+    private func UniqueItems() -> (models: [FeedImage], local : [LocalFeedImage]) {
+        let models = [FeedImage(id: UUID(), description: "desc", location: "", url: anyURL())]
         let locals = models.toLocal()
         return (models, locals)
     }
@@ -129,7 +129,7 @@ extension CacheFeedUseCaseTests {
         typealias InsertionCompletion = (Error?) -> Void
         enum Message: Equatable {
             case delete
-            case insert([LocalFeedItem], Date)
+            case insert([LocalFeedImage], Date)
         }
         
         private(set) var messages = [Message]()
@@ -145,7 +145,7 @@ extension CacheFeedUseCaseTests {
         func completeDeletionSuccessfully(index: Int = 0) {
             deletionCompletion[index](nil)
         }
-        func insertCache(items: [LocalFeedItem], timeStamp: Date, completion: @escaping InsertionCompletion) {
+        func insertCache(items: [LocalFeedImage], timeStamp: Date, completion: @escaping InsertionCompletion) {
             insertionCompletion.append(completion)
             messages.append(.insert(items, timeStamp))
         }

@@ -6,7 +6,7 @@ public final class LocalFeedLoader {
         self.store = store
         self.dateCreator = timeStamp
     }
-    public func save(item: [FeedItem], completion: @escaping (FeedResult) -> Void ) {
+    public func save(item: [FeedImage], completion: @escaping (FeedResult) -> Void ) {
         store.deleteCachedFeed { [weak self] error in
             guard let self = self else { return }
             if let error = error {
@@ -17,7 +17,7 @@ public final class LocalFeedLoader {
         }
     }
     
-    private func insertCache(items: [FeedItem], completion: @escaping (FeedResult) -> Void) {
+    private func insertCache(items: [FeedImage], completion: @escaping (FeedResult) -> Void) {
         self.store.insertCache(items: items.toLocal(), timeStamp: self.dateCreator()) { [weak self] error in
             guard self != nil else { return }
             completion(error)
@@ -25,14 +25,14 @@ public final class LocalFeedLoader {
     }
 }
 
-extension Array where Element == FeedItem {
-    public func toLocal() -> [LocalFeedItem] {
-        map { LocalFeedItem(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL) }
+extension Array where Element == FeedImage {
+    public func toLocal() -> [LocalFeedImage] {
+        map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url) }
     }
 }
 
-extension Array where Element == LocalFeedItem {
-    func toFeedItem() -> [FeedItem] {
-        map { FeedItem(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL) }
+extension Array where Element == LocalFeedImage {
+    func toFeedItem() -> [FeedImage] {
+        map { FeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url) }
     }
 }
