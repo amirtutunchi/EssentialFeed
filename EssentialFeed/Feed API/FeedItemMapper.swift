@@ -1,9 +1,3 @@
-internal struct RemoteFeedItem: Decodable {
-    let id: UUID
-    let description: String?
-    let location: String?
-    let image: URL
-}
 
 internal enum FeedItemMapper {
     private struct Root: Decodable {
