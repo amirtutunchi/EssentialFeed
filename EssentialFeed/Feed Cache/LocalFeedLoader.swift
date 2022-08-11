@@ -16,6 +16,9 @@ public final class LocalFeedLoader {
             }
         }
     }
+    public func load() {
+        self.store.retrieve()
+    }
     
     private func insertCache(items: [FeedImage], completion: @escaping (FeedResult) -> Void) {
         self.store.insertCache(items: items.toLocal(), timeStamp: self.dateCreator()) { [weak self] error in
