@@ -31,7 +31,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     
     func test_load_receiveCorrectResultOnEmptyCache() {
         let (sut, store) = makeSUT()
-        var capturedResult: [FeedImage]? = []
+        var capturedResult: [FeedImage]?
         sut.load { result in
             switch result {
             case let .success(feeds):
