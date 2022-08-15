@@ -16,12 +16,32 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     func test_load_failsOnRetrievalError() {
         let (sut, store) = makeSUT()
         var capturedError: Error?
-        sut.load { error in
-            capturedError = error
+        sut.load { result in
+            switch result {
+            case let .failure(error):
+                capturedError = error
+            default:
+                XCTFail("Expected error got \(result) instead")
+            }
         }
         let error = anyError()
         store.completeRetrieval(with: error)
         XCTAssertEqual(capturedError as? NSError, error)
+    }
+    
+    func test_load_receiveCorrectResultOnEmptyCache() {
+        let (sut, store) = makeSUT()
+        var capturedResult: [FeedImage]? = []
+        sut.load { result in
+            switch result {
+            case let .success(feeds):
+                capturedResult = feeds
+            default:
+                XCTFail("Expected result got \(result) instead")
+            }
+        }
+        store.completeRetrievalSuccessfullyWithEmptyCache()
+        XCTAssertEqual([], capturedResult)
     }
 }
 
@@ -38,6 +58,19 @@ extension LoadFeedFromCacheUseCaseTests {
     
     private func anyError() -> NSError {
         NSError(domain: "any error", code: 0)
+    }
+    private func UniqueItem() -> FeedImage {
+        FeedImage(id: UUID(), description: "desc", location: "", url: anyURL())
+    }
+    
+    private func UniqueItems() -> (models: [FeedImage], local : [LocalFeedImage]) {
+        let models = [FeedImage(id: UUID(), description: "desc", location: "", url: anyURL())]
+        let locals = models.toLocal()
+        return (models, locals)
+    }
+    
+    private func anyURL() -> URL {
+        URL(string: "http://a-url.com")!
     }
 }
 #endif

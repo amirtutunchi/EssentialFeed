@@ -60,7 +60,7 @@ class CacheFeedUseCaseTests: XCTestCase {
     func test_save_doesNotDeliverErrorAfterSUTDeallocationWhenErrorHappens() {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, timeStamp: Date.init)
-        var receivedErrors = [LocalFeedLoader.FeedResult]()
+        var receivedErrors = [LocalFeedLoader.SaveResult]()
         sut?.save(item: UniqueItems().models) { receivedErrors.append($0) }
         
         sut = nil
@@ -72,7 +72,7 @@ class CacheFeedUseCaseTests: XCTestCase {
     func test_save_doesNotDeliverErrorAfterSUTDeallocationWhenInsertionErrorHappens() {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, timeStamp: Date.init)
-        var receivedErrors = [LocalFeedLoader.FeedResult]()
+        var receivedErrors = [LocalFeedLoader.SaveResult]()
         sut?.save(item: UniqueItems().models) { receivedErrors.append($0) }
         
         store.completeDeletionSuccessfully()
