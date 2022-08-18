@@ -74,6 +74,39 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         
         XCTAssertEqual(store.messages, [.retrieve])
     }
+    
+    func test_load_doesNotDeleteCacheOnCacheLessThanSevenDay() {
+        let items = UniqueItems()
+        let fixedDate = Date().adding(days: -7).adding(seconds: 1)
+        
+        let (sut, store) = makeSUT { fixedDate }
+        expect(sut: sut, expectedResult: .success(items.models)) {
+            store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
+        }
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
+    
+    func test_load_doesDeleteCacheOnSevenDaysOldCache() {
+        let items = UniqueItems()
+        let fixedDate = Date().adding(days: -7)
+        
+        let (sut, store) = makeSUT { fixedDate }
+        expect(sut: sut, expectedResult: .success([])) {
+            store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
+        }
+        XCTAssertEqual(store.messages, [.retrieve, .delete])
+    }
+    
+    func test_load_doesDeleteCacheOnCacheMoreThanSevenDay() {
+        let items = UniqueItems()
+        let fixedDate = Date().adding(days: -7).adding(seconds: -1)
+        
+        let (sut, store) = makeSUT { fixedDate }
+        expect(sut: sut, expectedResult: .success([])) {
+            store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
+        }
+        XCTAssertEqual(store.messages, [.retrieve, .delete])
+    }
 }
 
 //MARK: - Helpers
