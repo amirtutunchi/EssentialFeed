@@ -58,6 +58,14 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
             store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
         }
     }
+    
+    func test_load_deleteCacheIfLoadsFailed() {
+        let (sut, store) = makeSUT()
+        sut.load { _ in}
+        store.completeRetrieval(with: anyError())
+        
+        XCTAssertEqual(store.messages, [.retrieve, .delete])
+    }
 }
 
 //MARK: - Helpers
