@@ -18,18 +18,26 @@ public final class LocalFeedLoader {
         }
     }
     public func load(completion: @escaping (LoadResult) -> Void) {
-        self.store.retrieve { result in
+        self.store.retrieve {[unowned self] result in
             switch result {
             case let .failure(error):
                 completion(.failure(error))
-            case .empty:
-                completion(.success([]))
-            case let .found(feeds, _):
+            
+            case let .found(feeds, timeStamp) where self.validateDate(timeStamp):
                 completion(.success(feeds.toFeedItem()))
+        
+            case .empty, .found:
+                completion(.success([]))
             }
         }
     }
     
+    private func validateDate(_ timeStamp: Date) -> Bool {
+        guard let maxDate = Calendar(identifier: .gregorian).date(byAdding: .day, value: 7, to: timeStamp) else {
+            return false
+        }
+        return Date() < maxDate
+    }
     private func insertCache(items: [FeedImage], completion: @escaping (SaveResult) -> Void) {
         self.store.insertCache(items: items.toLocal(), timeStamp: self.dateCreator()) { [weak self] error in
             guard self != nil else { return }

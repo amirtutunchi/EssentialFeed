@@ -30,7 +30,6 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     }
     
     func test_load_receiveResultOnCacheLessThanSevenDay() {
-        
         let items = UniqueItems()
         let fixedDate = Date().adding(days: -7).adding(seconds: 1)
         
@@ -40,7 +39,15 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         }
     }
     
-
+    func test_load_returnNoFeedImageOnCacheThatIsSevenDaysOld() {
+        let items = UniqueItems()
+        let fixedDate = Date().adding(days: -7)
+        
+        let (sut, store) = makeSUT { fixedDate }
+        expect(sut: sut, expectedResult: .success([])) {
+            store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
+        }
+    }
 }
 
 //MARK: - Helpers
