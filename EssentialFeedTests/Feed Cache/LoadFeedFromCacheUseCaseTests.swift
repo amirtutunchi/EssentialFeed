@@ -29,6 +29,17 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         }
     }
     
+    func test_load_receiveResultOnCacheLessThanSevenDay() {
+        
+        let items = UniqueItems()
+        let fixedDate = Date().adding(days: -7).adding(seconds: 1)
+        
+        let (sut, store) = makeSUT { fixedDate }
+        expect(sut: sut, expectedResult: .success(items.models)) {
+            store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
+        }
+    }
+    
 
 }
 
@@ -74,6 +85,15 @@ extension LoadFeedFromCacheUseCaseTests {
     
     private func anyURL() -> URL {
         URL(string: "http://a-url.com")!
+    }
+}
+
+extension Date {
+    func adding(days: Int) -> Date {
+        Calendar(identifier: .gregorian).date(byAdding: .day, value: days, to: self)!
+    }
+    func adding(seconds: TimeInterval) -> Date {
+        self + seconds
     }
 }
 #endif

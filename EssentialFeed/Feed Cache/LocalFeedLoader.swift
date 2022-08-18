@@ -18,11 +18,14 @@ public final class LocalFeedLoader {
         }
     }
     public func load(completion: @escaping (LoadResult) -> Void) {
-        self.store.retrieve { error in
-            if let error = error {
+        self.store.retrieve { result in
+            switch result {
+            case let .failure(error):
                 completion(.failure(error))
-            } else {
+            case .empty:
                 completion(.success([]))
+            case let .found(feeds, _):
+                completion(.success(feeds.toFeedItem()))
             }
         }
     }
