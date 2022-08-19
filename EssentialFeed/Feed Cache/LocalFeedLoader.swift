@@ -8,6 +8,9 @@ public final class LocalFeedLoader {
         self.store = store
         self.dateCreator = timeStamp
     }
+}
+
+extension LocalFeedLoader {
     public func save(item: [FeedImage], completion: @escaping (SaveResult) -> Void ) {
         store.deleteCachedFeed { [weak self] error in
             guard let self = self else { return }
@@ -18,6 +21,15 @@ public final class LocalFeedLoader {
             }
         }
     }
+    private func insertCache(items: [FeedImage], completion: @escaping (SaveResult) -> Void) {
+        self.store.insertCache(items: items.toLocal(), timeStamp: self.dateCreator()) { [weak self] error in
+            guard self != nil else { return }
+            completion(error)
+        }
+    }
+}
+
+extension LocalFeedLoader {
     public func load(completion: @escaping (LoadResult) -> Void) {
         self.store.retrieve {[weak self] result in
             guard let self = self else { return }
@@ -34,6 +46,8 @@ public final class LocalFeedLoader {
             }
         }
     }
+}
+extension LocalFeedLoader {
     private var maxDaysOfValidCache: Int { 7 }
     
     public func validateCache() {
@@ -56,12 +70,6 @@ public final class LocalFeedLoader {
             return false
         }
         return Date() < maxDate
-    }
-    private func insertCache(items: [FeedImage], completion: @escaping (SaveResult) -> Void) {
-        self.store.insertCache(items: items.toLocal(), timeStamp: self.dateCreator()) { [weak self] error in
-            guard self != nil else { return }
-            completion(error)
-        }
     }
 }
 
