@@ -28,7 +28,6 @@ public final class LocalFeedLoader {
             case let .found(feeds, timeStamp) where self.validateDate(timeStamp):
                 completion(.success(feeds.toFeedItem()))
             case .found:
-                self.store.deleteCachedFeed { _ in }
                 completion(.success([]))
             case .empty:
                 completion(.success([]))
@@ -37,13 +36,18 @@ public final class LocalFeedLoader {
     }
     private var maxDaysOfValidCache: Int { 7 }
     
-    public func validateCache(completion: @escaping (LoadResult) -> Void) {
+    public func validateCache() {
         self.store.retrieve {[weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure:
                 self.store.deleteCachedFeed { _ in }
-            default: break
+            case let .found( _, timeStamp) where !self.validateDate(timeStamp):
+                self.store.deleteCachedFeed { _ in }
+            case .found:
+                break
+            case .empty:
+                break
             }
         }
     }

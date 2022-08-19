@@ -7,11 +7,53 @@ class ValidateCacheFeedUseCase: XCTestCase {
         XCTAssertEqual(store.messages, [])
     }
     
-    func test_load_deleteCacheIfLoadsFailed() {
+    func test_validate_deleteCacheIfLoadsFailed() {
         let (sut, store) = makeSUT()
-        sut.validateCache { _ in}
+        sut.validateCache()
         store.completeRetrieval(with: anyError())
         XCTAssertEqual(store.messages, [.retrieve, .delete])
+    }
+    
+    func test_validate_doesNotDeleteCacheOnCacheLessThanSevenDay() {
+        let items = UniqueItems()
+        let fixedDate = Date().adding(days: -7).adding(seconds: 1)
+        
+        let (sut, store) = makeSUT { fixedDate }
+        sut.validateCache()
+        store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
+        
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
+    
+    func test_validate_deleteCacheOnSevenDaysOldCache() {
+        let items = UniqueItems()
+        let fixedDate = Date().adding(days: -7)
+        
+        let (sut, store) = makeSUT { fixedDate }
+        sut.validateCache()
+        store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
+        
+        XCTAssertEqual(store.messages, [.retrieve, .delete])
+    }
+    
+    func test_load_doesDeleteCacheOnCacheMoreThanSevenDay() {
+        let items = UniqueItems()
+        let fixedDate = Date().adding(days: -7).adding(seconds: -1)
+        
+        let (sut, store) = makeSUT { fixedDate }
+        sut.validateCache()
+        store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
+        XCTAssertEqual(store.messages, [.retrieve, .delete])
+    }
+    
+    func test_validate_doesNotReturnFeedImagesAfterDeallocation() {
+        let fixedDate = Date().adding(days: -7)
+        let store = FeedStoreSpy()
+        var sut: LocalFeedLoader? = LocalFeedLoader(store: store, timeStamp: { fixedDate })
+        sut?.validateCache()
+        sut = nil
+        store.completeRetrieval(with: anyError())
+        XCTAssertEqual(store.messages, [.retrieve])
     }
 }
 

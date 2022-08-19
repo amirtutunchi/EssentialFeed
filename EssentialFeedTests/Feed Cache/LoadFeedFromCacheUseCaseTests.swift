@@ -86,7 +86,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-    func test_load_doesDeleteCacheOnSevenDaysOldCache() {
+    func test_load_doesNotDeleteCacheOnSevenDaysOldCache() {
         let items = UniqueItems()
         let fixedDate = Date().adding(days: -7)
         
@@ -94,7 +94,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         expect(sut: sut, expectedResult: .success([])) {
             store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
         }
-        XCTAssertEqual(store.messages, [.retrieve, .delete])
+        XCTAssertEqual(store.messages, [.retrieve])
     }
     
     func test_load_doesDeleteCacheOnCacheMoreThanSevenDay() {
@@ -105,7 +105,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         expect(sut: sut, expectedResult: .success([])) {
             store.completeRetrievalSuccessfully(items: items.local, timeStamp: fixedDate)
         }
-        XCTAssertEqual(store.messages, [.retrieve, .delete])
+        XCTAssertEqual(store.messages, [.retrieve])
     }
     
     func test_load_doesNotReturnFeedImagesAfterDeallocation() {
