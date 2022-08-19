@@ -98,30 +98,13 @@ extension CacheFeedUseCaseTests {
         wait(for: [exp], timeout: 1.0)
         XCTAssertEqual(receivedError as? NSError, expectedError, file: file, line: line)
     }
+    
     private func makeSUT(timeStamp: @escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (LocalFeedLoader, FeedStoreSpy) {
         let store = FeedStoreSpy()
         let sut = LocalFeedLoader(store: store, timeStamp: timeStamp)
         addTrackForMemoryLeak(object: store, file: file, line: line)
         addTrackForMemoryLeak(object: sut, file: file, line: line)
         return (sut, store)
-    }
-    
-    private func UniqueItem() -> FeedImage {
-        FeedImage(id: UUID(), description: "desc", location: "", url: anyURL())
-    }
-    
-    private func UniqueItems() -> (models: [FeedImage], local : [LocalFeedImage]) {
-        let models = [FeedImage(id: UUID(), description: "desc", location: "", url: anyURL())]
-        let locals = models.toLocal()
-        return (models, locals)
-    }
-    
-    private func anyURL() -> URL {
-        URL(string: "http://a-url.com")!
-    }
-    
-    private func anyError() -> NSError {
-        NSError(domain: "any error", code: 0)
     }
 }
 #endif
