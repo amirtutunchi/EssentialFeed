@@ -29,11 +29,11 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         }
     }
     
-    func test_load_receiveResultOnCacheLessThanSevenDay() {
+    func test_load_receiveResultOnCacheOnNonExpiredCache() {
         let items = UniqueItems()
         let currentDate = Date()
 
-        let fixedDate = currentDate.adding(days: -7).adding(seconds: 1)
+        let fixedDate = currentDate.minusValidCacheDate().adding(seconds: 1)
         
         let (sut, store) = makeSUT { currentDate }
         expect(sut: sut, expectedResult: .success(items.models)) {
@@ -41,10 +41,10 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         }
     }
     
-    func test_load_returnNoFeedImageOnCacheThatIsSevenDaysOld() {
+    func test_load_returnNoFeedImageOnCacheExpirationDate() {
         let items = UniqueItems()
         let currentDate = Date()
-        let fixedDate = currentDate.adding(days: -7)
+        let fixedDate = currentDate.minusValidCacheDate()
         
         let (sut, store) = makeSUT { currentDate }
         expect(sut: sut, expectedResult: .success([])) {
@@ -52,10 +52,10 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         }
     }
     
-    func test_load_returnNoFeedImageOnCacheThatIsMoreThanSevenDaysOld() {
+    func test_load_returnNoFeedImageOnCacheThatIsExpired() {
         let items = UniqueItems()
         let currentDate = Date()
-        let fixedDate = Date().adding(days: -7).adding(seconds: -1)
+        let fixedDate = Date().minusValidCacheDate().adding(seconds: -1)
         
         let (sut, store) = makeSUT { currentDate }
         expect(sut: sut, expectedResult: .success([])) {
@@ -79,9 +79,9 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-    func test_load_doesNotDeleteCacheOnCacheLessThanSevenDay() {
+    func test_load_doesNotDeleteCacheOnNotExpiredCache() {
         let items = UniqueItems()
-        let fixedDate = Date().adding(days: -7).adding(seconds: 1)
+        let fixedDate = Date().minusValidCacheDate().adding(seconds: 1)
         
         let (sut, store) = makeSUT { fixedDate }
         expect(sut: sut, expectedResult: .success(items.models)) {
@@ -90,10 +90,10 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-    func test_load_doesNotDeleteCacheOnSevenDaysOldCache() {
+    func test_load_doesNotDeleteCacheOnCacheExpiration() {
         let items = UniqueItems()
         let currentDate = Date()
-        let fixedDate = currentDate.adding(days: -7)
+        let fixedDate = currentDate.minusValidCacheDate()
         
         let (sut, store) = makeSUT { currentDate }
         expect(sut: sut, expectedResult: .success([])) {
@@ -102,10 +102,10 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-    func test_load_doesDeleteCacheOnCacheMoreThanSevenDay() {
+    func test_load_doesDeleteCacheOnCacheExpiration() {
         let items = UniqueItems()
         let currentDate = Date()
-        let fixedDate = currentDate.adding(days: -7).adding(seconds: -1)
+        let fixedDate = currentDate.minusValidCacheDate().adding(seconds: -1)
         
         let (sut, store) = makeSUT { currentDate }
         expect(sut: sut, expectedResult: .success([])) {

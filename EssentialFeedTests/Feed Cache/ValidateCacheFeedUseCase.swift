@@ -14,9 +14,9 @@ class ValidateCacheFeedUseCase: XCTestCase {
         XCTAssertEqual(store.messages, [.retrieve, .delete])
     }
     
-    func test_validate_doesNotDeleteCacheOnCacheLessThanSevenDay() {
+    func test_validate_doesNotDeleteCacheOnNotExpiredCache() {
         let items = UniqueItems()
-        let fixedDate = Date().adding(days: -7).adding(seconds: 1)
+        let fixedDate = Date().minusValidCacheDate().adding(seconds: 1)
         
         let (sut, store) = makeSUT { fixedDate }
         sut.validateCache()
@@ -25,10 +25,10 @@ class ValidateCacheFeedUseCase: XCTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-    func test_validate_deleteCacheOnSevenDaysOldCache() {
+    func test_validate_deleteCacheOnCacheExpiration() {
         let items = UniqueItems()
         let date = Date()
-        let fixedDate = date.adding(days: -7)
+        let fixedDate = date.minusValidCacheDate()
         
         let (sut, store) = makeSUT { date }
         sut.validateCache()
@@ -37,10 +37,10 @@ class ValidateCacheFeedUseCase: XCTestCase {
         XCTAssertEqual(store.messages, [.retrieve, .delete])
     }
     
-    func test_load_doesDeleteCacheOnCacheMoreThanSevenDay() {
+    func test_load_doesDeleteCacheOnCacheExpiredAlready() {
         let items = UniqueItems()
         let date = Date()
-        let fixedDate = date.adding(days: -7).adding(seconds: -1)
+        let fixedDate = date.minusValidCacheDate().adding(seconds: -1)
         
         let (sut, store) = makeSUT { date }
         sut.validateCache()
