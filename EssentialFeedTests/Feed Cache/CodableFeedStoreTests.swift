@@ -55,7 +55,7 @@ class CodableFeedStoreTests: XCTestCase {
         try? FileManager.default.removeItem(at: storeUrl)
     }
     func test_retrieve_onEmptyCacheReturnsEmpty() {
-        let sut = CodableFeedStore()
+        let sut = makeSUT()
         let exp = expectation(description: "Wait for retrieve to complete")
         sut.retrieve { result in
             switch result {
@@ -70,7 +70,7 @@ class CodableFeedStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     func test_retrieve_onEmptyCacheTwiceDoesNotHaveAnySideEffects() {
-        let sut = CodableFeedStore()
+        let sut = makeSUT()
         let exp = expectation(description: "Wait for retrieve to complete")
         sut.retrieve { first in
             sut.retrieve { second in
@@ -86,7 +86,7 @@ class CodableFeedStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     func test_retrieve_returnCacheAfterInsertion() {
-        let sut = CodableFeedStore()
+        let sut = makeSUT()
         let feeds = UniqueItems().local
         let timeStamp = Date()
         let exp = expectation(description: "Wait for retrieve to complete")
@@ -109,3 +109,14 @@ class CodableFeedStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 }
+
+#if DEBUG
+// MARK: - Test Helpers
+private extension CodableFeedStoreTests {
+    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> CodableFeedStore {
+        let sut = CodableFeedStore()
+        addTrackForMemoryLeak(object: sut, file: file, line: line)
+        return sut
+    }
+}
+#endif
