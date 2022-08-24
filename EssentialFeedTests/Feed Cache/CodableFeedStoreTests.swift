@@ -3,8 +3,30 @@ import EssentialFeed
 
 class CodableFeedStore {
     private struct Cache: Codable {
-        let feeds: [LocalFeedImage]
+        let feeds: [CodableFeedImage]
         let timeStamp: Date
+        
+        var localFeeds: [LocalFeedImage] {
+            feeds.map { $0.local }
+        }
+    }
+    
+    private struct CodableFeedImage: Codable {
+        public init(image: LocalFeedImage) {
+            self.id = image.id
+            self.description = image.description
+            self.location = image.location
+            self.url = image.url
+        }
+        
+        public let id: UUID
+        public let description: String?
+        public let location: String?
+        public let url: URL
+        
+        var local: LocalFeedImage {
+            LocalFeedImage(id: self.id, description: self.description, location: self.location, url: self.url)
+        }
     }
     private let storeUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("feedCache.store")
     func retrieve(completion: @escaping (FeedStore.RetrievalCompletion)) {
@@ -13,12 +35,13 @@ class CodableFeedStore {
             return completion(.empty)
         }
         let cache = try! decoder.decode(Cache.self, from: data)
-        completion(.found(feeds: cache.feeds, timeStamp: cache.timeStamp))
+        completion(.found(feeds: cache.localFeeds, timeStamp: cache.timeStamp))
         
     }
     func insertCache(items: [LocalFeedImage], timeStamp: Date, completion: @escaping FeedStore.InsertionCompletion) {
         let encoder = JSONEncoder()
-        let encoded = try! encoder.encode(Cache(feeds: items, timeStamp: timeStamp))
+        let codableFeeds = items.map { CodableFeedImage(image: $0) }
+        let encoded = try! encoder.encode(Cache(feeds: codableFeeds , timeStamp: timeStamp))
         try! encoded.write(to: storeUrl)
         completion(nil)
     }

@@ -1,4 +1,4 @@
-public struct LocalFeedImage: Equatable, Codable {
+public struct LocalFeedImage: Equatable {
     public init(id: UUID, description: String?, location: String?, url: URL) {
         self.id = id
         self.description = description
