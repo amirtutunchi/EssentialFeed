@@ -33,6 +33,7 @@
 		CDD6F1CC28A4356E00BA1F2D /* LocalFeedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDD6F1CB28A4356E00BA1F2D /* LocalFeedImage.swift */; };
 		CDDA8664289960A100FDCFEC /* XCTTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA8663289960A100FDCFEC /* XCTTestCase+MemoryLeakTracking.swift */; };
 		CDDA86662899DBEF00FDCFEC /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA86652899DBEF00FDCFEC /* URLSessionHTTPClient.swift */; };
+		CDDAB41B28B6A4DB0063E0A2 /* CodableFeedStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDAB41A28B6A4DB0063E0A2 /* CodableFeedStoreTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,7 @@
 		CDD6F1CB28A4356E00BA1F2D /* LocalFeedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFeedImage.swift; sourceTree = "<group>"; };
 		CDDA8663289960A100FDCFEC /* XCTTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
 		CDDA86652899DBEF00FDCFEC /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
+		CDDAB41A28B6A4DB0063E0A2 /* CodableFeedStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableFeedStoreTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,6 +208,7 @@
 				CDD450B1289D3F220064910E /* CacheFeedUseCaseTests.swift */,
 				CD52C78D28A5A117004CEF61 /* LoadFeedFromCacheUseCaseTests.swift */,
 				CD78BDA328AF990700D179FE /* ValidateCacheFeedUseCase.swift */,
+				CDDAB41A28B6A4DB0063E0A2 /* CodableFeedStoreTests.swift */,
 			);
 			path = "Feed Cache";
 			sourceTree = "<group>";
@@ -388,6 +391,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDDAB41B28B6A4DB0063E0A2 /* CodableFeedStoreTests.swift in Sources */,
 				8DF078A62811F4F800C271C4 /* RemoteFeedLoaderTest.swift in Sources */,
 				CDDA8664289960A100FDCFEC /* XCTTestCase+MemoryLeakTracking.swift in Sources */,
 				CD975A0D28AFB1C10057ADB6 /* CacheTestHelpers.swift in Sources */,
