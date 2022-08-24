@@ -19,10 +19,10 @@ class CodableFeedStore {
             self.url = image.url
         }
         
-        public let id: UUID
-        public let description: String?
-        public let location: String?
-        public let url: URL
+        private let id: UUID
+        private let description: String?
+        private let location: String?
+        private let url: URL
         
         var local: LocalFeedImage {
             LocalFeedImage(id: self.id, description: self.description, location: self.location, url: self.url)
