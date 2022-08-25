@@ -56,10 +56,12 @@ class CodableFeedStoreTests: XCTestCase {
         super.setUp()
         setupStore()
     }
+    
     override func tearDown() {
         super.tearDown()
         removeStoreSideEffects()
     }
+    
     func test_retrieve_onEmptyCacheReturnsEmpty() {
         let sut = makeSUT()
         let exp = expectation(description: "Wait for retrieve to complete")
@@ -75,6 +77,7 @@ class CodableFeedStoreTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
     }
+    
     func test_retrieve_onEmptyCacheTwiceDoesNotHaveAnySideEffects() {
         let sut = makeSUT()
         let exp = expectation(description: "Wait for retrieve to complete")
@@ -91,6 +94,7 @@ class CodableFeedStoreTests: XCTestCase {
         }
         wait(for: [exp], timeout: 1.0)
     }
+    
     func test_retrieve_returnCacheAfterInsertion() {
         let sut = makeSUT()
         let feeds = UniqueItems().local
