@@ -76,14 +76,9 @@ class CodableFeedStoreTests: XCTestCase {
         let sut = makeSUT()
         let feeds = UniqueItems().local
         let timeStamp = Date()
-        let exp = expectation(description: "Wait for retrieve to complete")
-        sut.insertCache(items: feeds, timeStamp: timeStamp) { insertionError in
-            if let insertionError = insertionError {
-                XCTFail("should not failed but failed with \(insertionError)")
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        
+        insert((feeds, timeStamp), to: sut)
+        
         expect(sut: sut, expectedResult: .found(feeds: feeds, timeStamp: timeStamp))
     }
     
@@ -91,15 +86,8 @@ class CodableFeedStoreTests: XCTestCase {
         let sut = makeSUT()
         let feeds = UniqueItems().local
         let timeStamp = Date()
-        let exp = expectation(description: "Wait for retrieve to complete")
-        
-        sut.insertCache(items: feeds, timeStamp: timeStamp) { insertionError in
-            if let insertionError = insertionError {
-                XCTFail("should not failed but failed with \(insertionError)")
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+       
+        insert((feeds, timeStamp), to: sut)
         
         expect(sut: sut, toRetrieveExpectedResultTwice: .found(feeds: feeds, timeStamp: timeStamp))
     }
@@ -146,6 +134,17 @@ private extension CodableFeedStoreTests {
                 XCTAssertEqual(timeStampResult, expectedTimeStamp, file: file, line: line)
             default:
                 XCTFail("Expect \(expectedResult) got \(result) instead", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+    }
+    
+    private func insert(_ cache: (feeds: [LocalFeedImage], timeStamp: Date), to sut: CodableFeedStore, file: StaticString = #file, line: UInt = #line) {
+        let exp = expectation(description: "Wait for retrieve to complete")
+        sut.insertCache(items: cache.feeds, timeStamp: cache.timeStamp) { insertionError in
+            if let insertionError = insertionError {
+                XCTFail("should not failed but failed with \(insertionError)", file: file, line: line)
             }
             exp.fulfill()
         }
