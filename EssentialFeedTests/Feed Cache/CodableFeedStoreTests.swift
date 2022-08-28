@@ -32,6 +32,7 @@ class CodableFeedStore {
     init(storeUrl: URL) {
         self.storeUrl = storeUrl
     }
+    
     func retrieve(completion: @escaping (FeedStore.RetrievalCompletion)) {
         let decoder = JSONDecoder()
         guard let data = try? Data(contentsOf: storeUrl) else {
@@ -44,6 +45,7 @@ class CodableFeedStore {
             completion(.failure(error))
         }
     }
+    
     func insertCache(items: [LocalFeedImage], timeStamp: Date, completion: @escaping FeedStore.InsertionCompletion) {
         do {
             let encoder = JSONEncoder()
@@ -55,13 +57,17 @@ class CodableFeedStore {
             completion(error)
         }
     }
+    
     func deleteCachedFeed(completion: @escaping FeedStore.DeletionCompletion) {
         guard FileManager.default.fileExists(atPath: storeUrl.path) else {
             return completion(nil)
         }
-        
-        try! FileManager.default.removeItem(at: storeUrl)
-        completion(nil)
+        do {
+            try FileManager.default.removeItem(at: storeUrl)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
     }
 }
 
@@ -163,6 +169,12 @@ class CodableFeedStoreTests: XCTestCase {
         expect(sut: sut, expectedResult: .empty)
     }
     
+    func test_delete_deliverErrorOnDeletionError() {
+        let storeUrl = cachesDirectory()
+        let sut = makeSUT(storeUrl: storeUrl)
+        let deletionError = delete(sut: sut)
+        XCTAssertNotNil(deletionError)
+    }
 }
 
 #if DEBUG
@@ -234,6 +246,10 @@ private extension CodableFeedStoreTests {
         }
         wait(for: [exp], timeout: 1.0)
         return receivedError
+    }
+    
+    private func cachesDirectory() -> URL {
+        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
     }
 }
 #endif
