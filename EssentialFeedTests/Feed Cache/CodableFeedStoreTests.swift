@@ -104,6 +104,30 @@ class CodableFeedStoreTests: XCTestCase {
         let deletionError = delete(sut: sut)
         XCTAssertNotNil(deletionError)
     }
+    
+    func test_run_serial() {
+        let sut = makeSUT()
+        var operationArray = [XCTestExpectation]()
+        let op1 = expectation(description: "op1")
+        sut.insertCache(items: UniqueItems().local, timeStamp: Date()) { _ in
+            operationArray.append(op1)
+            op1.fulfill()
+        }
+        
+        let op2 = expectation(description: "op2")
+        sut.retrieve { _ in
+            operationArray.append(op2)
+            op2.fulfill()
+        }
+        
+        let op3 = expectation(description: "op3")
+        sut.deleteCachedFeed { _ in
+            operationArray.append(op3)
+            op3.fulfill()
+        }
+        wait(for: [op1, op2, op3], timeout: 5.0)
+        XCTAssertEqual([op1, op2, op3], operationArray)
+    }
 }
 
 #if DEBUG
@@ -173,7 +197,7 @@ private extension CodableFeedStoreTests {
             receivedError = error
             exp.fulfill()
         }
-        wait(for: [exp], timeout: 1.0)
+        wait(for: [exp], timeout: 10.0)
         return receivedError
     }
     
