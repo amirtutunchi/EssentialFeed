@@ -64,18 +64,7 @@ class CodableFeedStoreTests: XCTestCase {
     
     func test_retrieve_onEmptyCacheReturnsEmpty() {
         let sut = makeSUT()
-        let exp = expectation(description: "Wait for retrieve to complete")
-        sut.retrieve { result in
-            switch result {
-            case .empty:
-                break
-            default:
-                XCTFail("expect empty got\(result) instead")
-            }
-            exp.fulfill()
-        }
-        
-        wait(for: [exp], timeout: 1.0)
+        expect(sut: sut, expectedResult: .empty)
     }
     
     func test_retrieve_onEmptyCacheTwiceDoesNotHaveAnySideEffects() {
@@ -104,19 +93,10 @@ class CodableFeedStoreTests: XCTestCase {
             if let insertionError = insertionError {
                 XCTFail("should not failed but failed with \(insertionError)")
             }
-            
-            sut.retrieve { result in
-                switch result {
-                case let .found(expectedFeed, expectedTimeStamp):
-                    XCTAssertEqual(expectedFeed, feeds)
-                    XCTAssertEqual(expectedTimeStamp, timeStamp)
-                default:
-                    XCTFail("expect \(feeds) and \(timeStamp) got  \(result) instead")
-                }
-                exp.fulfill()
-            }
+            exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
+        expect(sut: sut, expectedResult: .found(feeds: feeds, timeStamp: timeStamp))
     }
     
     func test_retrieve_hasNoSideEffectsOnFoundCache() {
@@ -172,6 +152,23 @@ private extension CodableFeedStoreTests {
     
     private func removeStoreSideEffects() {
         deleteStore()
+    }
+    
+    private func expect(sut: CodableFeedStore, expectedResult: RetrievalCacheResultType, file: StaticString = #file, line: UInt = #line) {
+        let exp = expectation(description: "Wait for retrieval completion")
+        sut.retrieve { result in
+            switch (result, expectedResult) {
+            case (.empty, .empty):
+                break
+            case let (.found(feedResult, timeStampResult), .found(expectedFeed, expectedTimeStamp)):
+                XCTAssertEqual(feedResult, expectedFeed)
+                XCTAssertEqual(timeStampResult, expectedTimeStamp)
+            default:
+                XCTFail("Expect \(expectedResult) got \(result) instead")
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
     }
 }
 #endif
