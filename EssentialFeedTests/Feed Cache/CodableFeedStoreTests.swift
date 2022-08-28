@@ -149,13 +149,8 @@ class CodableFeedStoreTests: XCTestCase {
     
     func test_delete_deliverEmptyOnEmptyCache() {
         let sut = makeSUT()
-        let exp = expectation(description: "Wait for deletation")
-        sut.deleteCachedFeed { error in
-            XCTAssertNil(error)
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
-        
+        let deletionError = delete(sut: sut)
+        XCTAssertNil(deletionError)
         expect(sut: sut, expectedResult: .empty)
     }
     
@@ -163,18 +158,11 @@ class CodableFeedStoreTests: XCTestCase {
         let sut = makeSUT()
         let feeds = UniqueItems().local
         let timeStamp = Date()
-        
         insert((feeds, timeStamp), to: sut)
-        
-        let exp = expectation(description: "Wait for deletation")
-        sut.deleteCachedFeed { error in
-            XCTAssertNil(error)
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
-        
+        delete(sut: sut)
         expect(sut: sut, expectedResult: .empty)
     }
+    
 }
 
 #if DEBUG
@@ -234,6 +222,18 @@ private extension CodableFeedStoreTests {
         }
         wait(for: [exp], timeout: 1.0)
         return retrievalError
+    }
+    
+    @discardableResult
+    private func delete(sut: CodableFeedStore) -> Error? {
+        let exp = expectation(description: "Wait for deletation")
+        var receivedError: Error?
+        sut.deleteCachedFeed { error in
+            receivedError = error
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+        return receivedError
     }
 }
 #endif
