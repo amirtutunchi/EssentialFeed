@@ -169,11 +169,11 @@ extension RemoteFeedLoaderTest {
     }
     // MARK: - Spy
     private class HTTPClientSpy: HTTPClient {
-        var messages: [(url: URL, completion: (HTTPClientResult) -> Void)] = []
+        var messages: [(url: URL, completion: (HTTPClient.Result) -> Void)] = []
         var requestedURLs: [URL] {
             messages.map { $0.url }
         }
-        func get(url: URL, completionHandler completion: @escaping (HTTPClientResult) -> Void) {
+        func get(url: URL, completionHandler completion: @escaping (HTTPClient.Result) -> Void) {
             messages.append((url, completion))
         }
         func complete(with error: Error, at index: Int = 0) {
@@ -186,7 +186,7 @@ extension RemoteFeedLoaderTest {
                 httpVersion: nil,
                 headerFields: nil
             )!
-            messages[index].completion(.success(data, response))
+            messages[index].completion(.success((data, response)))
         }
     }
 }
