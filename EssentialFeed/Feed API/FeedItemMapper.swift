@@ -1,10 +1,10 @@
-internal enum FeedItemMapper {
+ enum FeedItemMapper {
     private struct Root: Decodable {
         let items: [RemoteFeedItem]
     }
 
     private static var OK_200: Int { 200 }
-    internal static func mapping(
+     static func mapping(
         data: Data,
         response: HTTPURLResponse
     ) throws -> [RemoteFeedItem] {
