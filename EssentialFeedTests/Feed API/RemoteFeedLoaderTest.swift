@@ -154,11 +154,7 @@ extension RemoteFeedLoaderTest {
             "description": feedItem1.description,
             "location": feedItem1.location,
             "image": feedItem1.url.absoluteString
-        ].reduce(into: [String: Any]()) { (acc, e) in
-            if let value = e.value {
-                acc[e.key] = value
-            }
-        }
+        ].compactMapValues { $0 }
         
         return (feedItem1, jsonFeedItem1)
     }
