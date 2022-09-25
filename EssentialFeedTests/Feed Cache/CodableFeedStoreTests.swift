@@ -181,8 +181,13 @@ private extension CodableFeedStoreTests {
     private func insert(_ cache: (feeds: [LocalFeedImage], timeStamp: Date), to sut: FeedStore) -> Error? {
         let exp = expectation(description: "Wait for retrieve to complete")
         var retrievalError: Error?
-        sut.insertCache(items: cache.feeds, timeStamp: cache.timeStamp) { insertionError in
-            retrievalError = insertionError
+        sut.insertCache(items: cache.feeds, timeStamp: cache.timeStamp) { insertionCompilation in
+            switch insertionCompilation {
+            case .failure(let error):
+                retrievalError = error
+            default:
+                break
+            }
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
@@ -193,8 +198,14 @@ private extension CodableFeedStoreTests {
     private func delete(sut: FeedStore) -> Error? {
         let exp = expectation(description: "Wait for deletation")
         var receivedError: Error?
-        sut.deleteCachedFeed { error in
-            receivedError = error
+        sut.deleteCachedFeed { errorCompilation in
+            switch errorCompilation {
+            case .failure(let error):
+                receivedError = error
+            default:
+                break
+            }
+        
             exp.fulfill()
         }
         wait(for: [exp], timeout: 10.0)

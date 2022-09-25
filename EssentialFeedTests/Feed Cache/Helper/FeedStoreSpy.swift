@@ -1,8 +1,13 @@
 import EssentialFeed
 
 class FeedStoreSpy: FeedStore {
-    typealias DeletionCompletion = (Error?) -> Void
-    typealias InsertionCompletion = (Error?) -> Void
+    
+    typealias DeletionError = Result<Void, Error>
+    typealias DeletionCompletion = (DeletionError) -> Void
+    
+    typealias InsertionError = Result<Void, Error>
+    typealias InsertionCompletion = (InsertionError) -> Void
+    
     typealias RetrievalCompletion = (FeedStore.RetrievalResult) -> Void
     enum Message: Equatable {
         case delete
@@ -20,21 +25,21 @@ class FeedStoreSpy: FeedStore {
         messages.append(.delete)
     }
     func completeDeletion(with error: Error, index: Int = 0) {
-        deletionCompletion[index](error)
+        deletionCompletion[index](.failure(error))
     }
     func completeDeletionSuccessfully(index: Int = 0) {
-        deletionCompletion[index](nil)
+        deletionCompletion[index](.success(()))
     }
     func insertCache(items: [LocalFeedImage], timeStamp: Date, completion: @escaping InsertionCompletion) {
         insertionCompletion.append(completion)
         messages.append(.insert(items, timeStamp))
     }
     func completeInsertion(with error: Error, index: Int = 0) {
-        insertionCompletion[index](error)
+        insertionCompletion[index](.failure(error))
     }
 
     func completeInsertionSuccessfully(index: Int = 0) {
-        insertionCompletion[index](nil)
+        insertionCompletion[index](.success(()))
     }
     func retrieve(completion: @escaping (RetrievalCompletion)) {
         retrievalCompletion.append(completion)

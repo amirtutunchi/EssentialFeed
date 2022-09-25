@@ -90,8 +90,13 @@ extension CacheFeedUseCaseTests {
         let items = [UniqueItem(), UniqueItem()]
         var receivedError: Error?
         let exp = expectation(description: "Wait for completion to run...")
-        sut.save(item: items) { error in
-            receivedError = error
+        sut.save(item: items) { errorCompilation in
+            switch errorCompilation {
+            case .failure(let error):
+                receivedError = error
+            default:
+                break
+            }
             exp.fulfill()
         }
         action()
