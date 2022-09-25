@@ -14,12 +14,12 @@ class CodableFeedStoreTests: XCTestCase {
     
     func test_retrieve_onEmptyCacheReturnsEmpty() {
         let sut = makeSUT()
-        expect(sut: sut, expectedResult: .empty)
+        expect(sut: sut, expectedResult: .success(.empty))
     }
     
     func test_retrieve_onEmptyCacheTwiceDoesNotHaveAnySideEffects() {
         let sut = makeSUT()
-        expect(sut: sut, toRetrieveExpectedResultTwice: .empty)
+        expect(sut: sut, toRetrieveExpectedResultTwice: .success(.empty))
     }
     
     func test_retrieve_returnCacheAfterInsertion() {
@@ -29,7 +29,7 @@ class CodableFeedStoreTests: XCTestCase {
         
         insert((feeds, timeStamp), to: sut)
         
-        expect(sut: sut, expectedResult: .found(feeds: feeds, timeStamp: timeStamp))
+        expect(sut: sut, expectedResult: .success(.found(feeds: feeds, timeStamp: timeStamp)))
     }
     
     func test_retrieve_hasNoSideEffectsOnFoundCache() {
@@ -39,7 +39,7 @@ class CodableFeedStoreTests: XCTestCase {
        
         insert((feeds, timeStamp), to: sut)
         
-        expect(sut: sut, toRetrieveExpectedResultTwice: .found(feeds: feeds, timeStamp: timeStamp))
+        expect(sut: sut, toRetrieveExpectedResultTwice: .success(.found(feeds: feeds, timeStamp: timeStamp)))
     }
     
     func test_retrieve_deliversFailureOnError() {
@@ -86,7 +86,7 @@ class CodableFeedStoreTests: XCTestCase {
         let sut = makeSUT()
         let deletionError = delete(sut: sut)
         XCTAssertNil(deletionError)
-        expect(sut: sut, expectedResult: .empty)
+        expect(sut: sut, expectedResult: .success(.empty))
     }
     
     func test_delete_deliverEmptyOnFoundCache() {
@@ -95,7 +95,7 @@ class CodableFeedStoreTests: XCTestCase {
         let timeStamp = Date()
         insert((feeds, timeStamp), to: sut)
         delete(sut: sut)
-        expect(sut: sut, expectedResult: .empty)
+        expect(sut: sut, expectedResult: .success(.empty))
     }
     
     func test_delete_deliverErrorOnDeletionError() {
@@ -155,18 +155,18 @@ private extension CodableFeedStoreTests {
         deleteStore()
     }
     
-    private func expect(sut: FeedStore, toRetrieveExpectedResultTwice: RetrievalCacheResultType, file: StaticString = #file, line: UInt = #line) {
+    private func expect(sut: FeedStore, toRetrieveExpectedResultTwice: FeedStore.RetrievalResult, file: StaticString = #file, line: UInt = #line) {
         expect(sut: sut, expectedResult: toRetrieveExpectedResultTwice, file: file, line: line)
         expect(sut: sut, expectedResult: toRetrieveExpectedResultTwice, file: file, line: line)
     }
     
-    private func expect(sut: FeedStore, expectedResult: RetrievalCacheResultType, file: StaticString = #file, line: UInt = #line) {
+    private func expect(sut: FeedStore, expectedResult: FeedStore.RetrievalResult, file: StaticString = #file, line: UInt = #line) {
         let exp = expectation(description: "Wait for retrieval completion")
         sut.retrieve { result in
             switch (result, expectedResult) {
-            case (.empty, .empty), (.failure, .failure):
+            case (.success(.empty), .success(.empty)), (.failure, .failure):
                 break
-            case let (.found(feedResult, timeStampResult), .found(expectedFeed, expectedTimeStamp)):
+            case let (.success(.found(feedResult, timeStampResult)), .success(.found(expectedFeed, expectedTimeStamp))):
                 XCTAssertEqual(feedResult, expectedFeed, file: file, line: line)
                 XCTAssertEqual(timeStampResult, expectedTimeStamp, file: file, line: line)
             default:

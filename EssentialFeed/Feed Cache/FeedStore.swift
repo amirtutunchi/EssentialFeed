@@ -1,5 +1,4 @@
-public enum RetrievalCacheResultType {
-    case failure(Error)
+public enum CachedFeed {
     case empty
     case found(feeds: [LocalFeedImage], timeStamp: Date)
 }
@@ -7,7 +6,10 @@ public enum RetrievalCacheResultType {
 public protocol FeedStore {
     typealias DeletionCompletion = (Error?) -> Void
     typealias InsertionCompletion = (Error?) -> Void
-    typealias RetrievalCompletion = (RetrievalCacheResultType) -> Void
+    
+    typealias RetrievalResult = Result<CachedFeed, Error>
+    typealias RetrievalCompletion = (RetrievalResult) -> Void
+    
     func deleteCachedFeed(completion: @escaping DeletionCompletion)
     func insertCache(items: [LocalFeedImage], timeStamp: Date, completion: @escaping InsertionCompletion)
     func retrieve(completion: @escaping (RetrievalCompletion))
