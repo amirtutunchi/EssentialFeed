@@ -45,10 +45,10 @@ class FeedStoreSpy: FeedStore {
         retrievalCompletion[index](.failure(error))
     }
     func completeRetrievalSuccessfullyWithEmptyCache(index: Int = 0) {
-        retrievalCompletion[index](.success(.empty))
+        retrievalCompletion[index](.success(.none))
     }
     func completeRetrievalSuccessfully(items: [LocalFeedImage], timeStamp: Date, index: Int = 0) {
-        retrievalCompletion[index](.success(.found(feeds: items, timeStamp: timeStamp)))
+        retrievalCompletion[index](.success(.some(CachedFeed(feeds: items, timeStamp: timeStamp))))
     }
     
 }

@@ -14,12 +14,12 @@ class CodableFeedStoreTests: XCTestCase {
     
     func test_retrieve_onEmptyCacheReturnsEmpty() {
         let sut = makeSUT()
-        expect(sut: sut, expectedResult: .success(.empty))
+        expect(sut: sut, expectedResult: .success(.none))
     }
     
     func test_retrieve_onEmptyCacheTwiceDoesNotHaveAnySideEffects() {
         let sut = makeSUT()
-        expect(sut: sut, toRetrieveExpectedResultTwice: .success(.empty))
+        expect(sut: sut, toRetrieveExpectedResultTwice: .success(.none))
     }
     
     func test_retrieve_returnCacheAfterInsertion() {
@@ -29,7 +29,7 @@ class CodableFeedStoreTests: XCTestCase {
         
         insert((feeds, timeStamp), to: sut)
         
-        expect(sut: sut, expectedResult: .success(.found(feeds: feeds, timeStamp: timeStamp)))
+        expect(sut: sut, expectedResult: .success(.some(CachedFeed(feeds: feeds, timeStamp: timeStamp))))
     }
     
     func test_retrieve_hasNoSideEffectsOnFoundCache() {
@@ -39,7 +39,7 @@ class CodableFeedStoreTests: XCTestCase {
        
         insert((feeds, timeStamp), to: sut)
         
-        expect(sut: sut, toRetrieveExpectedResultTwice: .success(.found(feeds: feeds, timeStamp: timeStamp)))
+        expect(sut: sut, toRetrieveExpectedResultTwice: .success(.some(CachedFeed(feeds: feeds, timeStamp: timeStamp))))
     }
     
     func test_retrieve_deliversFailureOnError() {
@@ -86,7 +86,7 @@ class CodableFeedStoreTests: XCTestCase {
         let sut = makeSUT()
         let deletionError = delete(sut: sut)
         XCTAssertNil(deletionError)
-        expect(sut: sut, expectedResult: .success(.empty))
+        expect(sut: sut, expectedResult: .success(.none))
     }
     
     func test_delete_deliverEmptyOnFoundCache() {
@@ -95,7 +95,7 @@ class CodableFeedStoreTests: XCTestCase {
         let timeStamp = Date()
         insert((feeds, timeStamp), to: sut)
         delete(sut: sut)
-        expect(sut: sut, expectedResult: .success(.empty))
+        expect(sut: sut, expectedResult: .success(.none))
     }
     
     func test_delete_deliverErrorOnDeletionError() {
@@ -164,11 +164,11 @@ private extension CodableFeedStoreTests {
         let exp = expectation(description: "Wait for retrieval completion")
         sut.retrieve { result in
             switch (result, expectedResult) {
-            case (.success(.empty), .success(.empty)), (.failure, .failure):
+            case (.success(.none), .success(.none)), (.failure, .failure):
                 break
-            case let (.success(.found(feedResult, timeStampResult)), .success(.found(expectedFeed, expectedTimeStamp))):
-                XCTAssertEqual(feedResult, expectedFeed, file: file, line: line)
-                XCTAssertEqual(timeStampResult, expectedTimeStamp, file: file, line: line)
+            case let (.success(.some(retrievedCache)), .success(.some(expectedCache))):
+                XCTAssertEqual(retrievedCache.feeds, expectedCache.feeds, file: file, line: line)
+                XCTAssertEqual(retrievedCache.timeStamp, expectedCache.timeStamp, file: file, line: line)
             default:
                 XCTFail("Expect \(expectedResult) got \(result) instead", file: file, line: line)
             }
