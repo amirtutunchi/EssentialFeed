@@ -141,24 +141,20 @@ extension RemoteFeedLoaderTest {
         wait(for: [expectation], timeout: 1.0)
     }
     
-    private func makeFeedItem(id: UUID, description: String?, location: String?, imageURL: URL) -> (model: FeedItem, json: [String: Any]) {
-        let feedItem1 = FeedItem(
+    private func makeFeedItem(id: UUID, description: String?, location: String?, imageURL: URL) -> (model: FeedImage, json: [String: Any]) {
+        let feedItem1 = FeedImage(
             id: id,
             description: description,
             location: location,
-            imageURL: imageURL
+            url: imageURL
         )
         
         let jsonFeedItem1 = [
             "id": feedItem1.id.uuidString,
             "description": feedItem1.description,
             "location": feedItem1.location,
-            "image": feedItem1.imageURL.absoluteString
-        ].reduce(into: [String: Any]()) { (acc, e) in
-            if let value = e.value {
-                acc[e.key] = value
-            }
-        }
+            "image": feedItem1.url.absoluteString
+        ].compactMapValues { $0 }
         
         return (feedItem1, jsonFeedItem1)
     }
@@ -173,11 +169,11 @@ extension RemoteFeedLoaderTest {
     }
     // MARK: - Spy
     private class HTTPClientSpy: HTTPClient {
-        var messages: [(url: URL, completion: (HTTPClientResult) -> Void)] = []
+        var messages: [(url: URL, completion: (HTTPClient.Result) -> Void)] = []
         var requestedURLs: [URL] {
             messages.map { $0.url }
         }
-        func get(url: URL, completionHandler completion: @escaping (HTTPClientResult) -> Void) {
+        func get(url: URL, completionHandler completion: @escaping (HTTPClient.Result) -> Void) {
             messages.append((url, completion))
         }
         func complete(with error: Error, at index: Int = 0) {
@@ -190,7 +186,7 @@ extension RemoteFeedLoaderTest {
                 httpVersion: nil,
                 headerFields: nil
             )!
-            messages[index].completion(.success(data, response))
+            messages[index].completion(.success((data, response)))
         }
     }
 }
