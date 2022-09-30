@@ -98,12 +98,12 @@ class CodableFeedStoreTests: XCTestCase {
         expect(sut: sut, expectedResult: .success(.none))
     }
     
-    func test_delete_deliverErrorOnDeletionError() {
-        let storeUrl = cachesDirectory()
-        let sut = makeSUT(storeUrl: storeUrl)
-        let deletionError = delete(sut: sut)
-        XCTAssertNotNil(deletionError)
-    }
+//    func test_delete_deliverErrorOnDeletionError() {
+//        let storeUrl = cachesDirectory()
+//        let sut = makeSUT(storeUrl: storeUrl)
+//        let deletionError = delete(sut: sut)
+//        XCTAssertNotNil(deletionError)
+//    }
     
     func test_run_serial() {
         let sut = makeSUT()
@@ -196,7 +196,7 @@ private extension CodableFeedStoreTests {
     
     @discardableResult
     private func delete(sut: FeedStore) -> Error? {
-        let exp = expectation(description: "Wait for deletation")
+        let exp = expectation(description: "Wait for deletion")
         var receivedError: Error?
         sut.deleteCachedFeed { errorCompilation in
             switch errorCompilation {
@@ -208,7 +208,7 @@ private extension CodableFeedStoreTests {
         
             exp.fulfill()
         }
-        wait(for: [exp], timeout: 10.0)
+        wait(for: [exp], timeout: 5.0)
         return receivedError
     }
     

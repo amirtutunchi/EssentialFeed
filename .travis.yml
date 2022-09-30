@@ -1,4 +1,6 @@
 os: osx
 osx_image: xcode13.4
 language: swift
-script: xcodebuild clean build test -project EssentialFeed.xcodeproj -scheme "CI" CODE_SIGNING_IDENTITY="" CODE_SIGNING_REQUIERED=NO
+script: 
+  - xcodebuild clean build test -project EssentialFeed.xcodeproj -scheme "CI_macOS" CODE_SIGNING_IDENTITY="" CODE_SIGNING_REQUIERED=NO -sdk macosx -destination "platform=macOS" ONLY_ACTIVE_ARCH=YES
+  - xcodebuild clean build test -project EssentialFeed.xcodeproj -scheme "CI_iOS" CODE_SIGNING_IDENTITY="" CODE_SIGNING_REQUIERED=NO -sdk iphonesimulator -destination "platform=iOS Simulator,OS=15.5,name=iPhone 13" ONLY_ACTIVE_ARCH=YES
