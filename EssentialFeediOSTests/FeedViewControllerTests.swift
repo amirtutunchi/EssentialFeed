@@ -26,6 +26,7 @@ class FeedViewController: UITableViewController {
 }
 
 class FeedViewControllerTests: XCTestCase {
+    
     func test_load_notLoadAtInit() {
         let (_ , loader) = makeSUT()
         XCTAssertEqual(loader.loadCount, 0)
@@ -52,7 +53,7 @@ class FeedViewControllerTests: XCTestCase {
     func test_viewDidLoad_showLoadingIndicator() {
         let (sut, _) = makeSUT()
         sut.loadViewIfNeeded()
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
+        XCTAssertEqual(sut.isShowingLoadingIndicator, true)
     }
     
     func test_viewDidLoad_hideLoadingIndicatorAfterLoaderCompleted() {
@@ -60,22 +61,21 @@ class FeedViewControllerTests: XCTestCase {
         sut.loadViewIfNeeded()
         
         loader.completeFeedLoading()
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, false)
+        XCTAssertEqual(sut.isShowingLoadingIndicator, false)
     }
     
     func test_userInitiatedReloads_showLoading() {
         let (sut, _) = makeSUT()
         sut.userInitiatedReloads()
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
+        XCTAssertEqual(sut.isShowingLoadingIndicator, true)
     }
     
     func test_userInitiatedReloads_endLoadingAfterLoaderCompleted() {
         let (sut, loader) = makeSUT()
         sut.userInitiatedReloads()
         loader.completeFeedLoading()
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, false)
+        XCTAssertEqual(sut.isShowingLoadingIndicator, false)
     }
-    
 }
 
 #if DEBUG
@@ -107,6 +107,10 @@ extension FeedViewControllerTests {
 private extension FeedViewController {
     func userInitiatedReloads() {
         self.refreshControl?.simulatePullToRefresh()
+    }
+    
+    var isShowingLoadingIndicator: Bool {
+        self.refreshControl?.isRefreshing ?? false
     }
 }
 
