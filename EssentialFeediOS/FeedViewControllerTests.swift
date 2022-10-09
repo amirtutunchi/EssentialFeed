@@ -22,7 +22,7 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadCount, 0)
     }
     
-    func test_load_whenViewDidLoad() {
+    func test_viewDidLoad_loadFeeds() {
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         XCTAssertEqual(loader.loadCount, 1)
