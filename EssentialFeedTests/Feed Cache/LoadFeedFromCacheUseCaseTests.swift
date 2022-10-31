@@ -9,7 +9,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     
     func test_load_requestCacheReterival() {
         let (sut, store) = makeSUT()
-        sut.load { _ in }
+        sut.loadFeed { _ in }
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
@@ -65,7 +65,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     
     func test_load_doesNotDeleteCacheIfLoadsFailed() {
         let (sut, store) = makeSUT()
-        sut.load { _ in}
+        sut.loadFeed { _ in}
         store.completeRetrieval(with: anyError())
         
         XCTAssertEqual(store.messages, [.retrieve])
@@ -73,7 +73,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     
     func test_load_doesNotDeleteCacheIfLoadsFailedOnEmptyCache() {
         let (sut, store) = makeSUT()
-        sut.load { _ in}
+        sut.loadFeed { _ in}
         store.completeRetrievalSuccessfullyWithEmptyCache()
         
         XCTAssertEqual(store.messages, [.retrieve])
@@ -118,7 +118,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, timeStamp: Date.init)
         var capturedResult = [LocalFeedLoader.LoadResult]()
-        sut?.load { result in
+        sut?.loadFeed { result in
             capturedResult.append(result)
         }
         sut = nil
@@ -140,7 +140,7 @@ extension LoadFeedFromCacheUseCaseTests {
     
     func expect(sut: LocalFeedLoader, expectedResult: LocalFeedLoader.LoadResult, action: () -> Void, file: StaticString = #file, line: UInt = #line) {
         let exp = expectation(description: "Wait for load to complete")
-        sut.load { receivedResult in
+        sut.loadFeed { receivedResult in
             switch (receivedResult, expectedResult) {
             case let (.failure(receivedError), .failure(expectedError)):
                 XCTAssertEqual(receivedError as NSError, expectedError as NSError, file: file, line: line)

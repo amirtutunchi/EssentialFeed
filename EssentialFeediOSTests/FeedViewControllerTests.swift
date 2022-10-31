@@ -63,12 +63,29 @@ class FeedViewControllerTests: XCTestCase {
         loader.completeFeedLoadingWithError(at: 1)
         assertThat(sut, isRendering: [image0])
     }
+    
+    func test_loadFeedCompletion_downloadImageWhenCellIsVisible() {
+        let image0 = makeImage(url: URL(string: "http://url0.com")!)
+        let image1 = makeImage(url: URL(string: "http://url1.com")!)
+        
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        loader.completeFeedLoading(with: [image0, image1], at: 0)
+        
+        sut.simulateFeedImageViewVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [image0.url])
+        
+        sut.simulateFeedImageViewVisible(at: 1)        
+        XCTAssertEqual(loader.loadedImageURLs, [image0.url, image1.url])
+    }
 }
 
 #if DEBUG
-class LoaderSpy: FeedLoader {
+class LoaderSpy: FeedLoader, ImageLoader {
+    // MARK: - FeedLoader
     var completions = [(FeedLoader.Result) -> Void]()
-    func load(completion: @escaping (FeedLoader.Result) -> Void) {
+    func loadFeed(completion: @escaping (Result<[FeedImage], Error>) -> Void) {
         completions.append(completion)
     }
     
@@ -84,17 +101,26 @@ class LoaderSpy: FeedLoader {
         let error = NSError(domain: "an error", code: 0)
         completions[index](.failure(error))
     }
+    
+    // MARK: - ImageLoader
+    var loadedImageURLs = [URL]()
+    
+    func loadImage(from url: URL) {
+        loadedImageURLs.append(url)
+    }
 }
 
 extension FeedViewControllerTests {
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FeedViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = FeedViewController(loader: loader)
+        let sut = FeedViewController(feedLoader: loader, imageLoader: loader)
         addTrackForMemoryLeak(object: sut, file: file, line: line)
         addTrackForMemoryLeak(object: loader, file: file, line: line)
         return(sut, loader)
     }
-    
+    private func makeImage(url: URL) -> FeedImage {
+        FeedImage(id: UUID(), description: nil, location: nil, url: url)
+    }
     private func assertThat(_ sut: FeedViewController, isRendering feed: [FeedImage], file: StaticString = #file, line: UInt = #line) {
         guard sut.numberOfLoadedFeed() == feed.count else {
             return XCTFail("Expected \(feed.count) images, got \(sut.numberOfLoadedFeed()) instead.", file: file, line: line)
@@ -131,6 +157,10 @@ private extension FeedViewController {
     
     var isShowingLoadingIndicator: Bool {
         self.refreshControl?.isRefreshing ?? false
+    }
+    
+    func simulateFeedImageViewVisible(at index: Int) {
+        _ = feedImageView(index: index)
     }
     
     func numberOfLoadedFeed() -> Int {
