@@ -1,13 +1,6 @@
 import EssentialFeed
 import UIKit
 
-public protocol ImageLoaderTask {
-    func cancel()
-}
-public protocol ImageLoader {
-    func loadImage(from url: URL) -> ImageLoaderTask
-}
-
 public class FeedViewController: UITableViewController {
     private var feedLoader: FeedLoader?
     private var imageLoader: ImageLoader?
