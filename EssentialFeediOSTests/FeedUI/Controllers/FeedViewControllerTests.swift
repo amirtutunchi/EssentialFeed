@@ -90,6 +90,9 @@ class FeedViewControllerTests: XCTestCase {
         loader.completeFeedLoading(with: [image0, image1], at: 0)
         XCTAssertEqual(loader.cancelImageURLS, [])
         
+        sut.simulateFeedImageViewVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [image0.url])
+        
         sut.simulateFeedImageViewNotVisible(at: 0)
         XCTAssertEqual(loader.cancelImageURLS, [image0.url])
         
@@ -140,7 +143,7 @@ class LoaderSpy: FeedLoader, ImageLoader {
 extension FeedViewControllerTests {
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FeedViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
-        let sut = FeedViewController(feedLoader: loader, imageLoader: loader)
+        let sut = FeedUIComposer.feedComposedWith(feedLoader: loader, imageLoader: loader)
         addTrackForMemoryLeak(object: sut, file: file, line: line)
         addTrackForMemoryLeak(object: loader, file: file, line: line)
         return(sut, loader)
