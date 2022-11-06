@@ -3,6 +3,7 @@ import UIKit
 
 public class FeedViewController: UITableViewController {
     private var feedRefreshViewController: FeedRefreshViewController?
+    
     var tableModel: [FeedImageCellController] = [] {
         didSet {
             tableView.reloadData()
@@ -17,7 +18,6 @@ public class FeedViewController: UITableViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         refreshControl = feedRefreshViewController?.view
-        
         feedRefreshViewController?.refresh()
     }
 }
