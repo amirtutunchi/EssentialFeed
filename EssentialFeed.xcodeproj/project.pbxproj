@@ -45,6 +45,7 @@
 		CDDA86662899DBEF00FDCFEC /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDA86652899DBEF00FDCFEC /* URLSessionHTTPClient.swift */; };
 		CDDAB41B28B6A4DB0063E0A2 /* CodableFeedStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDAB41A28B6A4DB0063E0A2 /* CodableFeedStoreTests.swift */; };
 		CDDAB42328BB770E0063E0A2 /* CodableFeedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDAB42228BB770E0063E0A2 /* CodableFeedStore.swift */; };
+		CDDCCC922917FF13003F12A3 /* FeedImageCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDCCC912917FF13003F12A3 /* FeedImageCellController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +131,7 @@
 		CDDA86652899DBEF00FDCFEC /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		CDDAB41A28B6A4DB0063E0A2 /* CodableFeedStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableFeedStoreTests.swift; sourceTree = "<group>"; };
 		CDDAB42228BB770E0063E0A2 /* CodableFeedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableFeedStore.swift; sourceTree = "<group>"; };
+		CDDCCC912917FF13003F12A3 /* FeedImageCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageCellController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,6 +260,7 @@
 			children = (
 				CD6CE9B628F2BC1F00A7D915 /* FeedViewController.swift */,
 				CD2433042913253300B18531 /* FeedRefreshViewController.swift */,
+				CDDCCC912917FF13003F12A3 /* FeedImageCellController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -627,6 +630,7 @@
 				CD40569E2909787B00CF41E5 /* FeedImageCell.swift in Sources */,
 				CD24330129131FDF00B18531 /* FeedImageLoader.swift in Sources */,
 				CD3EA04228E6EE9500378AD8 /* EssentialFeediOS.docc in Sources */,
+				CDDCCC922917FF13003F12A3 /* FeedImageCellController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

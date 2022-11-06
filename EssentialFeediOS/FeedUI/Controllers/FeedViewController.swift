@@ -9,7 +9,9 @@ public class FeedViewController: UITableViewController {
             tableView.reloadData()
         }
     }
-    private var tasks = [IndexPath: ImageLoaderTask]()
+    
+    private var cellControllers = [IndexPath: FeedImageCellController]()
+    
     public convenience init(feedLoader: FeedLoader, imageLoader: ImageLoader) {
         self.init()
         self.feedRefreshViewController = FeedRefreshViewController(feedLoader: feedLoader)
@@ -32,15 +34,11 @@ extension FeedViewController {
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let model = tableModel[indexPath.row]
-        let cell = FeedImageCell()
-        cell.locationContainer.isHidden = (model.location == nil)
-        cell.locationLabel.text = model.location
-        cell.descriptionLabel.text = model.description
-        tasks[indexPath] = imageLoader?.loadImage(from: model.url)
-        return cell
+        let feedImageController = FeedImageCellController(imageLoader: imageLoader!, model: model)
+        cellControllers[indexPath] = feedImageController
+        return feedImageController.view()
     }
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        tasks[indexPath]?.cancel()
-        tasks[indexPath] = nil
+        cellControllers[indexPath] = nil
     }
 }
