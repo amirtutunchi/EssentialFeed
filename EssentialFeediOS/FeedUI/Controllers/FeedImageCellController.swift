@@ -8,15 +8,22 @@ final class FeedImageCellController {
     }
     
     public func view() -> UITableViewCell {
-        let cell = FeedImageCell()
-        cell.locationContainer.isHidden = viewModel.isLocationContainerHidden
-        cell.locationLabel.text = viewModel.locationText
-        cell.descriptionLabel.text = viewModel.descriptionText
+        let cell = bound(FeedImageCell())
         viewModel.startLoadingImage()
         return cell
     }
 
     public func cancelTask() {
         viewModel.stopLoadingImage()
+    }
+    
+    private func bound(_ cell: FeedImageCell) -> FeedImageCell {
+        cell.locationContainer.isHidden = viewModel.isLocationContainerHidden
+        cell.locationLabel.text = viewModel.locationText
+        cell.descriptionLabel.text = viewModel.descriptionText
+        viewModel.onImageLoad = { image in
+            cell.feedImageView.image = image
+        }
+        return cell
     }
 }
