@@ -1,4 +1,3 @@
-import Foundation
 import EssentialFeed
 
 public final class FeedViewModel {
