@@ -1,4 +1,3 @@
-import EssentialFeed
 import UIKit
 
 public class FeedViewController: UITableViewController {
