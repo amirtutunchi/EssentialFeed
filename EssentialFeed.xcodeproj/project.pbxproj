@@ -257,6 +257,7 @@
 		CD2432FC29131F7E00B18531 /* FeedUI */ = {
 			isa = PBXGroup;
 			children = (
+				CDC6FF3E291E6014000889F8 /* Models */,
 				CDDCCC932918077A003F12A3 /* Composers */,
 				CD2432FE29131FA500B18531 /* Views */,
 				CD2432FD29131F8F00B18531 /* Controllers */,
@@ -310,7 +311,6 @@
 		CD3EA03F28E6EE9500378AD8 /* EssentialFeediOS */ = {
 			isa = PBXGroup;
 			children = (
-				CDC6FF3E291E6014000889F8 /* Models */,
 				CD2432FF29131FC300B18531 /* FeedImageLoader */,
 				CD2432FC29131F7E00B18531 /* FeedUI */,
 				CD3EA04128E6EE9500378AD8 /* EssentialFeediOS.docc */,
