@@ -21,8 +21,8 @@ public class FeedRefreshViewController: NSObject {
 // MARK: - Loading Presenter
 
 extension FeedRefreshViewController: FeedLoadingView {
-    func loadingStateChanged(isLoading: Bool) {
-        if isLoading {
+    func loadingStateChanged(viewModel: FeedLoadingViewModel) {
+        if viewModel.isLoading {
             view.beginRefreshing()
         } else {
             view.endRefreshing()
