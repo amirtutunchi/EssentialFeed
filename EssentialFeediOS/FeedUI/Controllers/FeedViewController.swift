@@ -1,7 +1,11 @@
 import UIKit
 
+protocol FeedViewControllerDelegate {
+    func didRequestFeedRefresh()
+}
+
 public class FeedViewController: UITableViewController {
-    @IBOutlet var feedRefreshViewController: FeedRefreshViewController?
+    var delegate: FeedViewControllerDelegate?
     
     var tableModel: [FeedImageCellController] = [] {
         didSet {
@@ -11,7 +15,11 @@ public class FeedViewController: UITableViewController {
         
     public override func viewDidLoad() {
         super.viewDidLoad()
-        feedRefreshViewController?.refresh()
+        refresh()
+    }
+    
+    @IBAction func refresh() {
+        delegate?.didRequestFeedRefresh()
     }
 }
 
@@ -26,5 +34,15 @@ extension FeedViewController {
     
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         tableModel[indexPath.row].cancelTask()
+    }
+}
+
+extension FeedViewController: FeedLoadingView {
+    func loadingStateChanged(viewModel: FeedLoadingViewModel) {
+        if viewModel.isLoading {
+            refreshControl?.beginRefreshing()
+        } else {
+            refreshControl?.endRefreshing()
+        }
     }
 }
