@@ -5,11 +5,11 @@ public final class FeedUIComposer {
     public static func feedComposedWith(feedLoader: FeedLoader, imageLoader: ImageLoader) -> FeedViewController {
         
         let feedLoaderPresentationAdaptor = FeedLoaderPresentationAdaptor(feedLoader: feedLoader)
-        let feedRefreshViewController = FeedRefreshViewController(loadFeed: feedLoaderPresentationAdaptor.loadFeed)
         let bundle = Bundle(for: FeedViewController.self)
         let storyboard = UIStoryboard(name: "Feed", bundle: bundle)
         let feedViewController = storyboard.instantiateInitialViewController() as! FeedViewController
-        feedViewController.feedRefreshViewController = feedRefreshViewController
+        let feedRefreshViewController = feedViewController.feedRefreshViewController!
+        feedRefreshViewController.delegate = feedLoaderPresentationAdaptor
         feedLoaderPresentationAdaptor.feedPresenter = FeedPresenter(
             feedLoadingView: WeakRefVirtualProxy<FeedRefreshViewController>(feedRefreshViewController),
             feedView: FeedAdaptor(
@@ -37,7 +37,7 @@ public final class FeedUIComposer {
 }
 
 // MARK: - PresenterAdaptor
-final class FeedLoaderPresentationAdaptor {
+final class FeedLoaderPresentationAdaptor: FeedRefreshViewControllerDelegate {
     let feedLoader: FeedLoader
     var feedPresenter: FeedPresenter?
     
@@ -45,12 +45,14 @@ final class FeedLoaderPresentationAdaptor {
         self.feedLoader = feedLoader
     }
     
-    func loadFeed() {
+    func didRequestFeedRefresh() {
         feedPresenter?.didStartLoadingFeed()
+        
         feedLoader.loadFeed { [weak self] result in
             switch result {
-            case let .success(feeds):
-                self?.feedPresenter?.didLoadedFeeds(feeds: feeds)
+            case let .success(feed):
+                self?.feedPresenter?.didLoadedFeeds(feeds: feed)
+                
             case let .failure(error):
                 self?.feedPresenter?.loadedFeedWithError(error: error)
             }

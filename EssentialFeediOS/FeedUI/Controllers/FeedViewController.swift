@@ -1,7 +1,7 @@
 import UIKit
 
 public class FeedViewController: UITableViewController {
-    var feedRefreshViewController: FeedRefreshViewController?
+    @IBOutlet var feedRefreshViewController: FeedRefreshViewController?
     
     var tableModel: [FeedImageCellController] = [] {
         didSet {
@@ -11,7 +11,6 @@ public class FeedViewController: UITableViewController {
         
     public override func viewDidLoad() {
         super.viewDidLoad()
-        refreshControl = feedRefreshViewController?.view
         feedRefreshViewController?.refresh()
     }
 }
