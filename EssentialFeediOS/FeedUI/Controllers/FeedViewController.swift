@@ -1,19 +1,14 @@
 import UIKit
 
 public class FeedViewController: UITableViewController {
-    private var feedRefreshViewController: FeedRefreshViewController?
+    var feedRefreshViewController: FeedRefreshViewController?
     
     var tableModel: [FeedImageCellController] = [] {
         didSet {
             tableView.reloadData()
         }
     }
-    
-    convenience init(feedRefreshViewController: FeedRefreshViewController) {
-        self.init()
-        self.feedRefreshViewController = feedRefreshViewController
-    }
-    
+        
     public override func viewDidLoad() {
         super.viewDidLoad()
         refreshControl = feedRefreshViewController?.view
