@@ -136,6 +136,14 @@ class FeedViewControllerTests: XCTestCase {
         
         XCTAssertNil(view?.renderedImage, "Because this cell is out of view it should not show any images")
     }
+    
+    func test_feedView_hasTitle() {
+        let (sut, _) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        
+        XCTAssertEqual(sut.title, "My Feed")
+    }
 }
 
 #if DEBUG
