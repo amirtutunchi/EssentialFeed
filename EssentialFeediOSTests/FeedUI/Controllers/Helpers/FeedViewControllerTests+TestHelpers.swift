@@ -4,6 +4,14 @@ import XCTest
 
 #if DEBUG
 extension FeedViewControllerTests {
+    
+    func localized(key: String, table: String, file: StaticString = #file, line: UInt = #line ) -> String {
+        let bundle = Bundle(for: FeedViewController.self)
+        let localizedKey = bundle.localizedString(forKey: key, value: nil, table: "Feed")
+        XCTAssertNotEqual(key, localizedKey, "This key is not translated. key: \(key)", file: file, line: line)
+        return localizedKey
+    }
+    
     func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FeedViewController, loader: LoaderSpy) {
         let loader = LoaderSpy()
         let sut = FeedUIComposer.feedComposedWith(feedLoader: loader, imageLoader: loader)
