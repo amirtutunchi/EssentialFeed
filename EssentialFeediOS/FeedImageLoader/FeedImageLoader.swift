@@ -6,6 +6,6 @@ public protocol ImageLoaderTask {
 public protocol ImageLoader {
     typealias Result = Swift.Result<Data, Error>
     
-    func loadImage(from url: URL, result: @escaping (Result) -> Void) -> ImageLoaderTask
+    func loadImage(from url: URL, completion: @escaping (Result) -> Void) -> ImageLoaderTask
 }
 

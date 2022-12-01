@@ -13,7 +13,7 @@ public final class FeedUIComposer {
             feedLoadingView: WeakRefVirtualProxy(feedViewController),
             feedView: FeedAdaptor(
                 feedViewController: feedViewController,
-                imageLoader: imageLoader
+                imageLoader: MainQueueDecorator(decoratee: imageLoader)
             )
         )
         return feedViewController
@@ -63,6 +63,17 @@ extension MainQueueDecorator: FeedLoader where T == FeedLoader {
     }
 }
 
+extension MainQueueDecorator: ImageLoader where T == ImageLoader {
+    func loadImage(from url: URL, completion: @escaping (ImageLoader.Result) -> Void) -> ImageLoaderTask {
+        decoratee.loadImage(from: url) { [weak self] result in
+            self?.dispatch {
+                completion(result)
+            }
+        }
+    }
+    
+    
+}
 // MARK: - PresenterAdaptor
 final class FeedLoaderPresentationAdaptor: FeedViewControllerDelegate {
     let feedLoader: FeedLoader
