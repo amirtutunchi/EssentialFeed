@@ -4,7 +4,7 @@ import EssentialFeed
 public final class FeedUIComposer {
     public static func feedComposedWith(feedLoader: FeedLoader, imageLoader: ImageLoader) -> FeedViewController {
         
-        let feedLoaderPresentationAdaptor = FeedLoaderPresentationAdaptor(feedLoader: feedLoader)
+        let feedLoaderPresentationAdaptor = FeedLoaderPresentationAdaptor(feedLoader: MainQueueDecorator(decoratee: feedLoader))
         let feedViewController = FeedViewController.makeWith(
             delegate: feedLoaderPresentationAdaptor,
             title: FeedPresenter.feedTitle
@@ -35,14 +35,24 @@ public final class FeedUIComposer {
     }
 }
 
-private extension FeedViewController {
-    static func makeWith(delegate: FeedViewControllerDelegate, title: String) -> FeedViewController {
-        let bundle = Bundle(for: FeedViewController.self)
-        let storyboard = UIStoryboard(name: "Feed", bundle: bundle)
-        let feedViewController = storyboard.instantiateInitialViewController() as! FeedViewController
-        feedViewController.title = title
-        feedViewController.delegate = delegate
-        return feedViewController
+// MARK: - MainQueue Decorator
+private final class MainQueueDecorator: FeedLoader {
+    private let decoratee: FeedLoader
+    
+    init(decoratee: FeedLoader) {
+        self.decoratee = decoratee
+    }
+    
+    func loadFeed(completion: @escaping (Result<[FeedImage], Error>) -> Void) {
+        decoratee.loadFeed { result in
+            if Thread.isMainThread {
+                completion(result)
+            } else {
+                DispatchQueue.main.async {
+                    completion(result)
+                }
+            }
+        }
     }
 }
 
@@ -107,5 +117,17 @@ private final class WeakRefVirtualProxy<T: AnyObject> {
 extension WeakRefVirtualProxy: FeedLoadingView where T: FeedLoadingView {
     func loadingStateChanged(viewModel: FeedLoadingViewModel) {
         object?.loadingStateChanged(viewModel: viewModel)
+    }
+}
+
+// MARK: FeedViewController extentions
+private extension FeedViewController {
+    static func makeWith(delegate: FeedViewControllerDelegate, title: String) -> FeedViewController {
+        let bundle = Bundle(for: FeedViewController.self)
+        let storyboard = UIStoryboard(name: "Feed", bundle: bundle)
+        let feedViewController = storyboard.instantiateInitialViewController() as! FeedViewController
+        feedViewController.title = title
+        feedViewController.delegate = delegate
+        return feedViewController
     }
 }

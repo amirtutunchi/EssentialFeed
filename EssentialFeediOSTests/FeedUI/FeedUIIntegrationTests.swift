@@ -144,6 +144,15 @@ class FeedUIIntegrationTests: XCTestCase {
                 
         XCTAssertEqual(sut.title, localized(key: "FEED_VIEW_TITLE", table: "Feed"))
     }
+    
+    func test_feedView_feedLoaderDispatchFromBackgroundQueue() {
+        let (sut, loader) = makeSUT()
+        sut.loadViewIfNeeded()
+        
+        DispatchQueue.global().async {
+            loader.completeFeedLoading(at: 0)
+        }
+    }
 }
 
 #if DEBUG
