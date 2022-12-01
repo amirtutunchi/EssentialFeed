@@ -2,7 +2,7 @@ import XCTest
 import EssentialFeediOS
 import EssentialFeed
 
-class FeedViewControllerTests: XCTestCase {
+class FeedUIIntegrationTests: XCTestCase {
     
     func test_loadFlow_loadDataCorrespondingly() {
         let (sut , loader) = makeSUT()

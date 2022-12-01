@@ -3,7 +3,7 @@ import EssentialFeediOS
 import XCTest
 
 #if DEBUG
-extension FeedViewControllerTests {
+extension FeedUIIntegrationTests {
     
     func localized(key: String, table: String, file: StaticString = #file, line: UInt = #line ) -> String {
         let bundle = Bundle(for: FeedViewController.self)
