@@ -3,9 +3,9 @@ import UIKit
 
 final class FeedAdaptor: FeedView {
     private weak var feedViewController: FeedViewController?
-    private let imageLoader: ImageLoader
+    private let imageLoader: FeedImageDataLoader
     
-    init(feedViewController: FeedViewController, imageLoader: ImageLoader) {
+    init(feedViewController: FeedViewController, imageLoader: FeedImageDataLoader) {
         self.feedViewController = feedViewController
         self.imageLoader = imageLoader
     }

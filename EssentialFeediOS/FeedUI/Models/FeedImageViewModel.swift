@@ -2,12 +2,12 @@ import EssentialFeed
 
 final class FeedImageViewModel<Image> {
     public typealias ImageTranslator = (Data) -> Image?
-    private var task: ImageLoaderTask?
-    private let imageLoader: ImageLoader
+    private var task: FeedImageDataLoaderTask?
+    private let imageLoader: FeedImageDataLoader
     private let model: FeedImage
     private var imageTranslator: ImageTranslator
     public init(
-        imageLoader: ImageLoader,
+        imageLoader: FeedImageDataLoader,
         model: FeedImage,
         imageTranslator: @escaping ImageTranslator
     ) {

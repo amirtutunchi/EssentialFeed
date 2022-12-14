@@ -2,7 +2,7 @@ import UIKit
 import EssentialFeed
 
 public final class FeedUIComposer {
-    public static func feedComposedWith(feedLoader: FeedLoader, imageLoader: ImageLoader) -> FeedViewController {
+    public static func feedComposedWith(feedLoader: FeedLoader, imageLoader: FeedImageDataLoader) -> FeedViewController {
         
         let feedLoaderPresentationAdaptor = FeedLoaderPresentationAdaptor(feedLoader: MainQueueDecorator(decoratee: feedLoader))
         let feedViewController = FeedViewController.makeWith(
@@ -19,7 +19,7 @@ public final class FeedUIComposer {
         return feedViewController
     }
     
-    private static func adaptFeedImageToFeedImageCellController(feedViewController: FeedViewController, imageLoader: ImageLoader) -> (([FeedImage]) -> Void) {
+    private static func adaptFeedImageToFeedImageCellController(feedViewController: FeedViewController, imageLoader: FeedImageDataLoader) -> (([FeedImage]) -> Void) {
         { [weak feedViewController] feeds in
             feedViewController?.tableModel = feeds.map {
                 let viewModel = FeedImageViewModel<UIImage>(

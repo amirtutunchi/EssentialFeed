@@ -3,7 +3,7 @@ import EssentialFeediOS
 import EssentialFeed
 
 #if DEBUG
-class LoaderSpy: FeedLoader, ImageLoader {
+class LoaderSpy: FeedLoader, FeedImageDataLoader {
     // MARK: - FeedLoader
     var completions = [(FeedLoader.Result) -> Void]()
     func loadFeed(completion: @escaping (Result<[FeedImage], Error>) -> Void) {
@@ -24,14 +24,14 @@ class LoaderSpy: FeedLoader, ImageLoader {
     }
     
     // MARK: - ImageLoader
-    private struct TaskSpy: ImageLoaderTask {
+    private struct TaskSpy: FeedImageDataLoaderTask {
         let cancelCallback: () -> Void
         func cancel() {
             cancelCallback()
         }
     }
     
-    private var imageRequests = [(url: URL, completion: (ImageLoader.Result) -> Void)]()
+    private var imageRequests = [(url: URL, completion: (FeedImageDataLoader.Result) -> Void)]()
     
     var loadedImageURLs: [URL] {
         return imageRequests.map { $0.url }
@@ -39,7 +39,7 @@ class LoaderSpy: FeedLoader, ImageLoader {
     
     private(set) var cancelImageURLS = [URL]()
     
-    func loadImage(from url: URL, completion: @escaping (ImageLoader.Result) -> Void) -> ImageLoaderTask {
+    func loadImage(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
         imageRequests.append((url, completion))
         return TaskSpy { [weak self] in self?.cancelImageURLS.append(url) }
     }

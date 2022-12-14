@@ -28,8 +28,8 @@ extension MainQueueDecorator: FeedLoader where T == FeedLoader {
     }
 }
 
-extension MainQueueDecorator: ImageLoader where T == ImageLoader {
-    func loadImage(from url: URL, completion: @escaping (ImageLoader.Result) -> Void) -> ImageLoaderTask {
+extension MainQueueDecorator: FeedImageDataLoader where T == FeedImageDataLoader {
+    func loadImage(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
         decoratee.loadImage(from: url) { [weak self] result in
             self?.dispatch {
                 completion(result)
