@@ -1,5 +1,5 @@
 import XCTest
-import EssentialFeediOS
+import EssentialFeed
 
 class FeedLocalizationTests: XCTestCase {
     func test_localizationString_hasValueAndSupportAllLocales() {
