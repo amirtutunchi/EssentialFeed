@@ -5,6 +5,5 @@ public struct FeedLoadingViewModel: Equatable {
         self.isLoading = isLoading
     }
     
-    let isLoading: Bool
-    
+    public let isLoading: Bool
 }

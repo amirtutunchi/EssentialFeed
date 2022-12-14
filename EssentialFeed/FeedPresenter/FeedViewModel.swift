@@ -3,5 +3,5 @@ public struct FeedViewModel: Equatable {
         self.feeds = feeds
     }
     
-    let feeds: [FeedImage]
+    public let feeds: [FeedImage]
 }

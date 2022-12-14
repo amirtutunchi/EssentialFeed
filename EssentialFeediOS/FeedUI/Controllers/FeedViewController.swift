@@ -1,4 +1,5 @@
 import UIKit
+import EssentialFeed
 
 protocol FeedViewControllerDelegate {
     func didRequestFeedRefresh()
@@ -38,7 +39,7 @@ extension FeedViewController {
 }
 
 extension FeedViewController: FeedLoadingView {
-    func loadingStateChanged(viewModel: FeedLoadingViewModel) {
+    public func loadingStateChanged(viewModel: FeedLoadingViewModel) {
         if viewModel.isLoading {
             refreshControl?.beginRefreshing()
         } else {

@@ -6,7 +6,7 @@ import XCTest
 extension FeedUIIntegrationTests {
     
     func localized(key: String, table: String, file: StaticString = #file, line: UInt = #line ) -> String {
-        let bundle = Bundle(for: FeedViewController.self)
+        let bundle = Bundle(for: FeedPresenter.self)
         let localizedKey = bundle.localizedString(forKey: key, value: nil, table: "Feed")
         XCTAssertNotEqual(key, localizedKey, "This key is not translated. key: \(key)", file: file, line: line)
         return localizedKey
