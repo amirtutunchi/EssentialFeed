@@ -103,6 +103,27 @@
 			remoteGlobalIDString = 8DF078852811F28B00C271C4;
 			remoteInfo = EssentialFeed;
 		};
+		CDCB199D29512DA20046E3D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDCB199729512DA20046E3D0 /* EssentialApp.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCB196429512DA00046E3D0;
+			remoteInfo = EssentialApp;
+		};
+		CDCB199F29512DA20046E3D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDCB199729512DA20046E3D0 /* EssentialApp.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCB197A29512DA20046E3D0;
+			remoteInfo = EssentialAppTests;
+		};
+		CDCB19A129512DA20046E3D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDCB199729512DA20046E3D0 /* EssentialApp.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCB198429512DA20046E3D0;
+			remoteInfo = EssentialAppUITests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -164,6 +185,7 @@
 		CD975A0C28AFB1C10057ADB6 /* CacheTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheTestHelpers.swift; sourceTree = "<group>"; };
 		CDC6FF41291E6A28000889F8 /* FeedImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageViewModel.swift; sourceTree = "<group>"; };
 		CDC6FF44291E71D0000889F8 /* UIImage+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TestHelpers.swift"; sourceTree = "<group>"; };
+		CDCB199729512DA20046E3D0 /* EssentialApp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EssentialApp.xcodeproj; path = EssentialApp/EssentialApp.xcodeproj; sourceTree = "<group>"; };
 		CDD450B1289D3F220064910E /* CacheFeedUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheFeedUseCaseTests.swift; sourceTree = "<group>"; };
 		CDD450B428A1D4E20064910E /* LocalFeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFeedLoader.swift; sourceTree = "<group>"; };
 		CDD450B628A1D51F0064910E /* FeedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedStore.swift; sourceTree = "<group>"; };
@@ -247,6 +269,7 @@
 		8DF0787C2811F28B00C271C4 = {
 			isa = PBXGroup;
 			children = (
+				CDCB199729512DA20046E3D0 /* EssentialApp.xcodeproj */,
 				8DF078882811F28B00C271C4 /* EssentialFeed */,
 				8DF078942811F28C00C271C4 /* EssentialFeedTests */,
 				CD952BCA289ACDE500E33C8A /* EssentialFeedAPIEndToEndTests */,
@@ -430,6 +453,16 @@
 				CDC6FF44291E71D0000889F8 /* UIImage+TestHelpers.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		CDCB199829512DA20046E3D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CDCB199E29512DA20046E3D0 /* EssentialApp.app */,
+				CDCB19A029512DA20046E3D0 /* EssentialAppTests.xctest */,
+				CDCB19A229512DA20046E3D0 /* EssentialAppUITests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		CDD450B0289D3EF80064910E /* Feed Cache */ = {
@@ -654,6 +687,12 @@
 			mainGroup = 8DF0787C2811F28B00C271C4;
 			productRefGroup = 8DF078872811F28B00C271C4 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = CDCB199829512DA20046E3D0 /* Products */;
+					ProjectRef = CDCB199729512DA20046E3D0 /* EssentialApp.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8DF078852811F28B00C271C4 /* EssentialFeed */,
@@ -664,6 +703,30 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		CDCB199E29512DA20046E3D0 /* EssentialApp.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = EssentialApp.app;
+			remoteRef = CDCB199D29512DA20046E3D0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CDCB19A029512DA20046E3D0 /* EssentialAppTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = EssentialAppTests.xctest;
+			remoteRef = CDCB199F29512DA20046E3D0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CDCB19A229512DA20046E3D0 /* EssentialAppUITests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = EssentialAppUITests.xctest;
+			remoteRef = CDCB19A129512DA20046E3D0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8DF078842811F28B00C271C4 /* Resources */ = {
