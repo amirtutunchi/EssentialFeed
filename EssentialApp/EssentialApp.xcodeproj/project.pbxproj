@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		CD63F6B82953C36A0052D166 /* FeedLoaderWithFallbackCompositTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD63F6B72953C36A0052D166 /* FeedLoaderWithFallbackCompositTests.swift */; };
 		CD63F6BD2953CADD0052D166 /* TestHelper+MemoryLeak.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD63F6BC2953CADD0052D166 /* TestHelper+MemoryLeak.swift */; };
+		CD63F6BF2953D17B0052D166 /* FeedLoaderWithFallbackComposit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD63F6BE2953D17B0052D166 /* FeedLoaderWithFallbackComposit.swift */; };
 		CDCB196829512DA00046E3D0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDCB196729512DA00046E3D0 /* AppDelegate.swift */; };
 		CDCB196A29512DA00046E3D0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDCB196929512DA00046E3D0 /* SceneDelegate.swift */; };
 		CDCB196F29512DA00046E3D0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDCB196D29512DA00046E3D0 /* Main.storyboard */; };
@@ -48,6 +49,7 @@
 /* Begin PBXFileReference section */
 		CD63F6B72953C36A0052D166 /* FeedLoaderWithFallbackCompositTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoaderWithFallbackCompositTests.swift; sourceTree = "<group>"; };
 		CD63F6BC2953CADD0052D166 /* TestHelper+MemoryLeak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestHelper+MemoryLeak.swift"; sourceTree = "<group>"; };
+		CD63F6BE2953D17B0052D166 /* FeedLoaderWithFallbackComposit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoaderWithFallbackComposit.swift; sourceTree = "<group>"; };
 		CDCB196429512DA00046E3D0 /* EssentialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EssentialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDCB196729512DA00046E3D0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CDCB196929512DA00046E3D0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				CDCB197029512DA20046E3D0 /* Assets.xcassets */,
 				CDCB197229512DA20046E3D0 /* LaunchScreen.storyboard */,
 				CDCB197529512DA20046E3D0 /* Info.plist */,
+				CD63F6BE2953D17B0052D166 /* FeedLoaderWithFallbackComposit.swift */,
 			);
 			path = EssentialApp;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 			files = (
 				CDCB196829512DA00046E3D0 /* AppDelegate.swift in Sources */,
 				CDCB196A29512DA00046E3D0 /* SceneDelegate.swift in Sources */,
+				CD63F6BF2953D17B0052D166 /* FeedLoaderWithFallbackComposit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
