@@ -12,10 +12,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let url = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed/v1/feed")!
         let session = URLSession(configuration: .ephemeral)
         let client = URLSessionHTTPClient(session: session)
-        let feedLoader = RemoteFeedLoader(url: url, client: client)
+        let remoteFeedLoader = RemoteFeedLoader(url: url, client: client)
         let imageLoader = RemoteFeedImageDataLoader(client: client)
+        let localFeedLoader = LocalFeedLoader(
+            store: CodableFeedStore(storeUrl: .applicationDirectory),
+            timeStamp: {
+                Date()
+            }
+        )
         
-        let feedViewController = FeedUIComposer.feedComposedWith(feedLoader: feedLoader, imageLoader: imageLoader)
+        let feedViewController = FeedUIComposer.feedComposedWith(
+            feedLoader: FeedLoaderWithFallbackComposit(
+                primary: remoteFeedLoader,
+                fallback: localFeedLoader
+            ),
+                imageLoader: imageLoader
+        )
         window?.rootViewController = feedViewController
     }
 }
