@@ -117,13 +117,6 @@
 			remoteGlobalIDString = CDCB197A29512DA20046E3D0;
 			remoteInfo = EssentialAppTests;
 		};
-		CDCB19A129512DA20046E3D0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CDCB199729512DA20046E3D0 /* EssentialApp.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = CDCB198429512DA20046E3D0;
-			remoteInfo = EssentialAppUITests;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -460,7 +453,6 @@
 			children = (
 				CDCB199E29512DA20046E3D0 /* EssentialApp.app */,
 				CDCB19A029512DA20046E3D0 /* EssentialAppTests.xctest */,
-				CDCB19A229512DA20046E3D0 /* EssentialAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -717,13 +709,6 @@
 			fileType = wrapper.cfbundle;
 			path = EssentialAppTests.xctest;
 			remoteRef = CDCB199F29512DA20046E3D0 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CDCB19A229512DA20046E3D0 /* EssentialAppUITests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = EssentialAppUITests.xctest;
-			remoteRef = CDCB19A129512DA20046E3D0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

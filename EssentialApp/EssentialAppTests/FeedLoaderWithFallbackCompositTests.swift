@@ -20,13 +20,8 @@ final class FeedLoaderWithFallbackCompositTests: XCTestCase {
     func test_load_deliversPrimaryFeedLoaderResultOnSuccess() {
         let primaryFeed = UniqueFeed()
         let fallbackFeed = UniqueFeed()
-        let primaryLoader = StubLoader(result: .success([primaryFeed]))
-        let fallbackLoader = StubLoader(result: .success([fallbackFeed]))
-        
-        let sut = FeedLoaderWithFallbackComposit(primary: primaryLoader, fallback: fallbackLoader)
-        
+        let sut = makeSUT(primaryFeed: primaryFeed, fallbackFeed: fallbackFeed)
         let exp = expectation(description: "Wait for loader to complete")
-        
         sut.loadFeed { result in
             switch result {
             case let .success(receivedFeed):
@@ -42,6 +37,16 @@ final class FeedLoaderWithFallbackCompositTests: XCTestCase {
 
 #if DEBUG
 extension FeedLoaderWithFallbackCompositTests {
+    private func makeSUT(primaryFeed: FeedImage, fallbackFeed: FeedImage, file: StaticString = #file, line: UInt = #line) -> FeedLoaderWithFallbackComposit {
+        let primaryLoader = StubLoader(result: .success([primaryFeed]))
+        let fallbackLoader = StubLoader(result: .success([fallbackFeed]))
+        let sut = FeedLoaderWithFallbackComposit(primary: primaryLoader, fallback: fallbackLoader)
+        addTrackForMemoryLeak(object: primaryLoader, file: file, line: line)
+        addTrackForMemoryLeak(object: fallbackLoader, file: file, line: line)
+        addTrackForMemoryLeak(object: sut, file: file, line: line)
+        return sut
+    }
+    
     private class StubLoader: FeedLoader {
         let result: FeedLoader.Result
 
