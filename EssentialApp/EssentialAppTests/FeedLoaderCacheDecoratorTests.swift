@@ -18,12 +18,12 @@ final class FeedLoaderCacheDecoratorTests: XCTestCase {
     
     func test_load_succeedOnReturningData() {
         let feed = UniqueFeed()
-        let loader = StubLoader(result: .success([feed]))
+        let loader = FeedLoaderStub(result: .success([feed]))
         let sut = FeedLoaderCacheDecorator(decoratee: loader)
         expect(sut, toCompleteWith: .success([feed]))
     }
     func test_load_returnsErrorOnFailure() {
-        let loader = StubLoader(result: .failure(anyError()))
+        let loader = FeedLoaderStub(result: .failure(anyError()))
         let sut = FeedLoaderCacheDecorator(decoratee: loader)
         expect(sut, toCompleteWith: .failure(anyError()))
     }
@@ -49,18 +49,6 @@ extension FeedLoaderCacheDecoratorTests {
         }
         
         wait(for: [exp], timeout: 1.0)
-    }
-    
-    private class StubLoader: FeedLoader {
-        let result: FeedLoader.Result
-
-        init(result: Result<[FeedImage], Error>) {
-            self.result = result
-        }
-        
-        func loadFeed(completion: @escaping (Result<[EssentialFeed.FeedImage], Error>) -> Void) {
-            completion(result)
-        }
     }
     
     private func UniqueFeed() -> FeedImage {

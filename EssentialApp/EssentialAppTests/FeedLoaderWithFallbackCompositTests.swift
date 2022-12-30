@@ -45,25 +45,13 @@ extension FeedLoaderWithFallbackCompositTests {
         wait(for: [exp], timeout: 1.0)
     }
     private func makeSUT(primaryResult: FeedLoader.Result, fallbackResult: FeedLoader.Result, file: StaticString = #file, line: UInt = #line) -> FeedLoaderWithFallbackComposit {
-        let primaryLoader = StubLoader(result: primaryResult)
-        let fallbackLoader = StubLoader(result: fallbackResult)
+        let primaryLoader = FeedLoaderStub(result: primaryResult)
+        let fallbackLoader = FeedLoaderStub(result: fallbackResult)
         let sut = FeedLoaderWithFallbackComposit(primary: primaryLoader, fallback: fallbackLoader)
         addTrackForMemoryLeak(object: primaryLoader, file: file, line: line)
         addTrackForMemoryLeak(object: fallbackLoader, file: file, line: line)
         addTrackForMemoryLeak(object: sut, file: file, line: line)
         return sut
-    }
-    
-    private class StubLoader: FeedLoader {
-        let result: FeedLoader.Result
-
-        init(result: Result<[FeedImage], Error>) {
-            self.result = result
-        }
-        
-        func loadFeed(completion: @escaping (Result<[EssentialFeed.FeedImage], Error>) -> Void) {
-            completion(result)
-        }
     }
     
     private func UniqueFeed() -> FeedImage {
