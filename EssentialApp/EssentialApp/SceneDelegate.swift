@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let remoteFeedLoader = RemoteFeedLoader(url: url, client: client)
         let imageLoader = RemoteFeedImageDataLoader(client: client)
         let localFeedLoader = LocalFeedLoader(
-            store: CodableFeedStore(storeUrl: .applicationDirectory),
+            store: CodableFeedStore(storeUrl: .documentsDirectory),
             timeStamp: {
                 Date()
             }
@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let feedViewController = FeedUIComposer.feedComposedWith(
             feedLoader: FeedLoaderWithFallbackComposit(
-                primary: remoteFeedLoader,
+                primary: FeedLoaderCacheDecorator(decoratee: remoteFeedLoader, feedCache: localFeedLoader),
                 fallback: localFeedLoader
             ),
                 imageLoader: imageLoader
