@@ -22,6 +22,7 @@ final class FeedLoaderCacheDecoratorTests: XCTestCase {
         let sut = FeedLoaderCacheDecorator(decoratee: loader)
         expect(sut, toCompleteWith: .success([feed]))
     }
+    
     func test_load_returnsErrorOnFailure() {
         let loader = FeedLoaderStub(result: .failure(anyError()))
         let sut = FeedLoaderCacheDecorator(decoratee: loader)
@@ -49,14 +50,6 @@ extension FeedLoaderCacheDecoratorTests {
         }
         
         wait(for: [exp], timeout: 1.0)
-    }
-    
-    private func UniqueFeed() -> FeedImage {
-        FeedImage(id: UUID(), description: "a description ", location: nil, url: URL(string: "https://google.com")!)
-    }
-    
-    private func anyError() -> NSError {
-        NSError(domain: "any error", code: 0)
     }
 }
 

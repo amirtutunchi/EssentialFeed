@@ -44,6 +44,7 @@ extension FeedLoaderWithFallbackCompositTests {
         
         wait(for: [exp], timeout: 1.0)
     }
+    
     private func makeSUT(primaryResult: FeedLoader.Result, fallbackResult: FeedLoader.Result, file: StaticString = #file, line: UInt = #line) -> FeedLoaderWithFallbackComposit {
         let primaryLoader = FeedLoaderStub(result: primaryResult)
         let fallbackLoader = FeedLoaderStub(result: fallbackResult)
@@ -53,14 +54,5 @@ extension FeedLoaderWithFallbackCompositTests {
         addTrackForMemoryLeak(object: sut, file: file, line: line)
         return sut
     }
-    
-    private func UniqueFeed() -> FeedImage {
-        FeedImage(id: UUID(), description: "a description ", location: nil, url: URL(string: "https://google.com")!)
-    }
-    
-    private func anyError() -> NSError {
-        NSError(domain: "any error", code: 0)
-    }
 }
-
 #endif
