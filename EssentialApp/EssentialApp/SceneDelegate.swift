@@ -13,13 +13,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let client = makeRemoteClient()
         let remoteFeedLoader = RemoteFeedLoader(url: url, client: client)
         let imageLoader = RemoteFeedImageDataLoader(client: client)
+        let fileURL: URL = .documentsDirectory
         let localFeedLoader = LocalFeedLoader(
-            store: CodableFeedStore(storeUrl: .documentsDirectory),
+            store: CodableFeedStore(storeUrl: fileURL),
             timeStamp: {
                 Date()
             }
         )
-        
+        if CommandLine.arguments.contains("-reset") {
+            try? FileManager.default.removeItem(at: fileURL)
+        }
         let feedViewController = FeedUIComposer.feedComposedWith(
             feedLoader: FeedLoaderWithFallbackComposit(
                 primary: FeedLoaderCacheDecorator(decoratee: remoteFeedLoader, feedCache: localFeedLoader),
