@@ -6,7 +6,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let _ = (scene as? UIWindowScene) else { return }
         let url = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed/v1/feed")!
@@ -20,9 +19,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 Date()
             }
         )
+        #if DEBUG
         if CommandLine.arguments.contains("-reset") {
             try? FileManager.default.removeItem(at: fileURL)
         }
+        #endif
+        
         let feedViewController = FeedUIComposer.feedComposedWith(
             feedLoader: FeedLoaderWithFallbackComposit(
                 primary: FeedLoaderCacheDecorator(decoratee: remoteFeedLoader, feedCache: localFeedLoader),
@@ -34,17 +36,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func makeRemoteClient() -> HTTPClient {
-        switch UserDefaults.standard.string(forKey: "connectivity") {
-        case "offline":
+                #if DEBUG
+        if UserDefaults.standard.string(forKey: "connectivity") == "offline" {
             return AlwaysFailingHTTPClient()
-            
-        default:
-            let session = URLSession(configuration: .ephemeral)
-            return URLSessionHTTPClient(session: session)
         }
+        #endif
+        let session = URLSession(configuration: .ephemeral)
+        return URLSessionHTTPClient(session: session)
     }
 }
 
+#if DEBUG
 private final class AlwaysFailingHTTPClient: HTTPClient {
     private class Task: HTTPClientTask {
         func cancel() { }
@@ -55,3 +57,4 @@ private final class AlwaysFailingHTTPClient: HTTPClient {
         return Task()
     }
 }
+#endif
