@@ -1,14 +1,14 @@
 import UIKit
 import EssentialFeed
 
-protocol FeedViewControllerDelegate {
+public protocol FeedViewControllerDelegate {
     func didRequestFeedRefresh()
 }
 
 public class FeedViewController: UITableViewController {
-    var delegate: FeedViewControllerDelegate?
+    public var delegate: FeedViewControllerDelegate?
     
-    var tableModel: [FeedImageCellController] = [] {
+    private var tableModel: [FeedImageCellController] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -17,6 +17,10 @@ public class FeedViewController: UITableViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         refresh()
+    }
+    
+    public func display(_ cellControllers: [FeedImageCellController]) {
+        tableModel = cellControllers
     }
     
     @IBAction func refresh() {

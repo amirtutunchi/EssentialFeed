@@ -1,5 +1,6 @@
 import EssentialFeed
 import EssentialFeediOS
+import EssentialApp
 import XCTest
 
 #if DEBUG

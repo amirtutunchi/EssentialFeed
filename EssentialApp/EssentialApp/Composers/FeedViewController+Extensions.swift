@@ -1,4 +1,6 @@
 import UIKit
+import EssentialFeediOS
+import EssentialFeed
 
 extension FeedViewController {
     static func makeWith(delegate: FeedViewControllerDelegate, title: String) -> FeedViewController {
