@@ -6,6 +6,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     let fileURL: URL = .documentsDirectory
+    private lazy var httpClient: HTTPClient = {
+        let session = URLSession(configuration: .ephemeral)
+        return URLSessionHTTPClient(session: session)
+    }()
+    
+    convenience init(httpClient: HTTPClient) {
+        self.init()
+        self.httpClient = httpClient
+    }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let _ = (scene as? UIWindowScene) else { return }
@@ -13,9 +22,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     func configureWindow() {
         let url = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed/v1/feed")!
-        let client = makeRemoteClient()
-        let remoteFeedLoader = RemoteFeedLoader(url: url, client: client)
-        let imageLoader = RemoteFeedImageDataLoader(client: client)
+        let remoteFeedLoader = RemoteFeedLoader(url: url, client: httpClient)
+        let imageLoader = RemoteFeedImageDataLoader(client: httpClient)
         let localFeedLoader = LocalFeedLoader(
             store: CodableFeedStore(storeUrl: fileURL),
             timeStamp: {
@@ -31,10 +39,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             imageLoader: imageLoader
         ))
         window?.rootViewController = feedViewController
-    }
-    
-    func makeRemoteClient() -> HTTPClient {
-        let session = URLSession(configuration: .ephemeral)
-        return URLSessionHTTPClient(session: session)
     }
 }
