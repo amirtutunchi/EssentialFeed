@@ -9,11 +9,6 @@
 			<key>orderHint</key>
 			<integer>5</integer>
 		</dict>
-		<key>EssentialAppUIAcceptanceTests.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>6</integer>
-		</dict>
 		<key>EssentialFeedAPIEndToEndTests.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
