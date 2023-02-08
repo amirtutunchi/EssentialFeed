@@ -65,18 +65,18 @@ class LoadImageCommentsFromRemoteUseCasesTests: XCTestCase {
     
     func test_load_deliversItemsOn2xxHTTPResponse() {
         let (sut, client) = makeSUT()
-        let feedItem1 = makeFeedItem(
+        let feedItem1 = makeItem(
             id: UUID(),
-            description: "a description",
-            location: "a lcoation",
-            imageURL: URL(string: "https://a-given-url.com")!
+            message: "a message",
+            createdAt: (date: Date(timeIntervalSince1970: 1598627222), iso8601String: "2020-08-28T15:07:02+00:00"),
+            username: "a username"
         )
         
-        let feedItem2 = makeFeedItem(
+        let feedItem2 = makeItem(
             id: UUID(),
-            description: nil,
-            location: nil,
-            imageURL: URL(string: "https://a-given-url.com")!
+            message: "another message",
+            createdAt: (date: Date(timeIntervalSince1970: 1598627222), iso8601String: "2020-08-28T15:07:02+00:00"),
+            username: "another username"
         )
         let samples = [200, 201, 230, 299]
         samples.enumerated().forEach { index, code in
@@ -148,19 +148,21 @@ extension LoadImageCommentsFromRemoteUseCasesTests {
         wait(for: [expectation], timeout: 1.0)
     }
     
-    private func makeFeedItem(id: UUID, description: String?, location: String?, imageURL: URL) -> (model: FeedImage, json: [String: Any]) {
-        let feedItem1 = FeedImage(
+    private func makeItem(id: UUID, message: String, createdAt: (date: Date, iso8601String: String), username: String) -> (model: ImageComment, json: [String: Any]) {
+        let feedItem1 = ImageComment(
             id: id,
-            description: description,
-            location: location,
-            url: imageURL
+            message: message,
+            createdAt: createdAt.date,
+            username: username
         )
         
         let jsonFeedItem1 = [
-            "id": feedItem1.id.uuidString,
-            "description": feedItem1.description,
-            "location": feedItem1.location,
-            "image": feedItem1.url.absoluteString
+            "id": id.uuidString,
+            "message": message,
+            "created_at": createdAt.iso8601String,
+            "author": [
+                "username": username
+            ]
         ].compactMapValues { $0 }
         
         return (feedItem1, jsonFeedItem1)
