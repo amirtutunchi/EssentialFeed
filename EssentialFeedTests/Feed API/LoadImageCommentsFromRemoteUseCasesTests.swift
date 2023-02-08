@@ -41,11 +41,14 @@ class LoadImageCommentsFromRemoteUseCasesTests: XCTestCase {
         }
     }
     
-    func test_load_deliversErrorOn200HTTPResponseWithInvalidJson() {
+    func test_load_deliversErrorOn2xxHTTPResponseWithInvalidJson() {
+        let samples = [200, 201, 230, 299]
         let (sut, client) = makeSUT()
-        expect(feedLoader: sut, toCompleteWithResult: failure(.invalidData)) {
-            let invalidJSON = Data("invalid json".utf8)
-            client.complete(withStatusCode: 200, data: invalidJSON)
+        samples.enumerated().forEach { index, code in
+            expect(feedLoader: sut, toCompleteWithResult: failure(.invalidData)) {
+                let invalidJSON = Data("invalid json".utf8)
+                client.complete(withStatusCode: code, data: invalidJSON, at: index)
+            }
         }
     }
     
