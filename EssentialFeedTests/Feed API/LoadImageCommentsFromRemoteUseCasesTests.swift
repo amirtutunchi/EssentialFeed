@@ -30,8 +30,8 @@ class LoadImageCommentsFromRemoteUseCasesTests: XCTestCase {
         }
     }
     
-    func test_load_deliversErrorOnNon200HTTPResponse() {
-        let samples = [199, 201, 404, 400, 500]
+    func test_load_deliversErrorOnNon2xxHTTPResponse() {
+        let samples = [199, 150, 404, 400, 500]
         let (sut, client) = makeSUT()
         samples.enumerated().forEach { index, code in
             expect(feedLoader: sut, toCompleteWithResult: failure(.invalidData)) {
