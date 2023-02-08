@@ -52,15 +52,18 @@ class LoadImageCommentsFromRemoteUseCasesTests: XCTestCase {
         }
     }
     
-    func test_load_deliversEmptyJSONOn200HTTPResponse() {
+    func test_load_deliversEmptyJSONOn2xxHTTPResponse() {
+        let samples = [200, 201, 230, 299]
         let (sut, client) = makeSUT()
-        expect(feedLoader: sut, toCompleteWithResult: .success([])) {
-            let emptyListJSON = Data("{\"items\": []}".utf8)
-            client.complete(withStatusCode: 200, data: emptyListJSON)
+        samples.enumerated().forEach { index, code in
+            expect(feedLoader: sut, toCompleteWithResult: .success([])) {
+                let emptyListJSON = Data("{\"items\": []}".utf8)
+                client.complete(withStatusCode: code, data: emptyListJSON, at: index)
+            }
         }
     }
     
-    func test_load_deliversItemsOn200HTTPResponse() {
+    func test_load_deliversItemsOn2xxHTTPResponse() {
         let (sut, client) = makeSUT()
         let feedItem1 = makeFeedItem(
             id: UUID(),
@@ -75,13 +78,15 @@ class LoadImageCommentsFromRemoteUseCasesTests: XCTestCase {
             location: nil,
             imageURL: URL(string: "https://a-given-url.com")!
         )
-    
-        expect(
-            feedLoader: sut,
-            toCompleteWithResult: .success([feedItem1.model, feedItem2.model])
-        ) {
-            let json = makeItemJSON([feedItem1.json, feedItem2.json])
-            client.complete(withStatusCode: 200, data: json)
+        let samples = [200, 201, 230, 299]
+        samples.enumerated().forEach { index, code in
+            expect(
+                feedLoader: sut,
+                toCompleteWithResult: .success([feedItem1.model, feedItem2.model])
+            ) {
+                let json = makeItemJSON([feedItem1.json, feedItem2.json])
+                client.complete(withStatusCode: code, data: json, at: index)
+            }
         }
     }
     
